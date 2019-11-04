@@ -1,0 +1,136 @@
+$bgColor: #f0f4f3;
+$redColor: #cc5154;
+$primaryColor: #3aaf9f;
+$grayColor: #333;
+$textColor: #636363;
+$whiteColor: #FFF;
+
+@font-face {
+    font-family: 'Adventure';
+    src: url(./fonts/Adventure.ttf)
+}
+
+@font-face {
+    font-family: 'Giger';
+    src: url(./fonts/Giger.ttf);
+}
+
+@font-face {
+    font-family: 'MonotypeCorsiva';
+    src: url(./fonts/MonotypeCorsiva.ttf);
+}
+
+body {
+    margin: 0;
+    // background: $bgColor;
+    font-family: 'Giger';
+    color: $textColor;
+}
+
+.title {
+    font: 50px 'MonotypeCorsiva';
+    color: $grayColor;
+}
+
+.btn {
+
+    margin-right: 15px; 
+
+    &.btn-primary {
+        background: $redColor;
+        border-color: $redColor;
+    }
+
+    &.btn-dark {
+        margin-top: 15px;
+    }
+}
+
+.navbar {
+    background: linear-gradient(-45deg, #cc5154 30%, #fff 30%);
+    margin: 0 -15px 50px -15px;
+    box-shadow: inset 0 -1px 0 $redColor;
+
+    ul.navbar-nav {
+        li {
+            a.nav-link {
+                font-size: 20px;
+                font-weight: 600;
+                color: $grayColor;
+                padding: 0 15px;
+                text-transform: uppercase;
+
+                &.active {
+                    color: $redColor;
+                }
+            }
+        }
+    }
+
+    .navbar-brand {
+        span {    
+            font: 16px 'Giger';
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #df0809;
+            position: relative;
+            top: 15px;
+            left: -36px;
+            letter-spacing: .06em;
+        }
+    }
+    
+}
+
+.Account {
+    .col-md-6 {
+        padding: 35px;
+    }
+
+    .account-welcome-block {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: $redColor;
+
+        .title, .subtitle {
+            color: $whiteColor;
+        }
+
+        .title {
+            font-size: 55px;
+        }
+
+        .subtitle {
+            font-size: 18px;
+        }
+    }
+}
+
+.App-link {
+    color: $redColor;
+
+    &:hover {
+        color: $redColor;
+    }
+}
+
+.Items-list {
+    ul {
+        padding: 0;
+
+        li {
+            list-style: none;
+            position: relative;
+
+            span {
+                background: linear-gradient(-45deg, #fff 25%, #cc5154 25%);
+                color: #fff;
+                font-size: 25px;
+                padding: 2px 50px 2px 15px;
+                text-transform: uppercase;
+            }
+        }
+    }
+}
