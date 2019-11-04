@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { myFirebase } from '../../firebase';
 import { setCurrentUser } from '../../actions';
+import {Redirect} from 'react-router-dom';
 
 
 const SignIn = () => {
     const dispatch = useDispatch();
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
+    const [redirect, setRedirect] = useState();
     
     const handleSignIn = event => {
         event.preventDefault();
@@ -15,11 +17,20 @@ const SignIn = () => {
             .auth()
             .signInWithEmailAndPassword(email, password)
             .then(user => {
-                dispatch(setCurrentUser(user))
+                dispatch(setCurrentUser(user));
+                setRedirect({
+                    redirect: true
+                })
+                
+
             })
             .catch(error => {
                 console.log(error)
             })
+    }
+
+    if (redirect) {
+        return <Redirect to="/list" />;
     }
 
     return (

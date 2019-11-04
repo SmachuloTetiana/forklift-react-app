@@ -1,9 +1,22 @@
 import React from 'react';
 import logo from '../../images/logo.gif';
 import { NavLink } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
+import { myFirebase } from '../../firebase';
+import { setCurrentUser } from '../../actions';
 
 const Navbar = ({ currentUser }) => {
+
+    const dispatch = useDispatch();
+    const handleSignOut = () => {
+        myFirebase
+            .auth()
+            .signOut()
+            .then(() => {
+                dispatch(setCurrentUser())
+            })
+    }
+
     return (
         <nav className="navbar navbar-expand-sm bg-light navbar-light">
             <a className="navbar-brand" href="/">
@@ -22,7 +35,7 @@ const Navbar = ({ currentUser }) => {
                     </li>
                     {
                         currentUser ? (
-                            <button type="button" className="btn btn-primary">Sign Out</button>
+                            <button type="button" className="btn btn-primary" onClick={handleSignOut}>Sign Out</button>
                         ) : (                            
                             <li className="nav-item">
                                 <NavLink activeClassName="active" className="nav-link" to="/sign-in">Sign In</NavLink>
