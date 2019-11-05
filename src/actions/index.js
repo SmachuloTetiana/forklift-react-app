@@ -17,3 +17,10 @@ export const setCurrentUser = user => {
         payload: user
     }
 }
+
+export const getForklift = forklift => {
+    return {
+        type: 'FORKLIFTS',
+        payload: forklift
+    }
+}
