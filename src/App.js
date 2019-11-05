@@ -10,7 +10,7 @@ import List from './components/List';
 
 function App() {
   return (
-    <div className="App">
+    <div className="container-fluid">
       <Navbar />
       <Switch>
         <Route path="/" exact component={Home} />
