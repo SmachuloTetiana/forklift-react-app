@@ -2,8 +2,10 @@ import React from 'react';
 import logo from '../../images/logo.gif';
 import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { myFirebase } from '../../firebase';
 
 const Navbar = ({ currentUser }) => {
+
     return (
         <nav className="navbar navbar-expand-sm bg-light navbar-light">
             <a className="navbar-brand" href="/">
