@@ -1,10 +1,9 @@
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { myFirebase } from '../../firebase';
 import { setRegisterUser } from '../../actions';
 
 const Signup = () => {
-
     const dispatch = useDispatch();
     const [user, setUser] = useState({
         name: '',
@@ -15,6 +14,7 @@ const Signup = () => {
     const handleChange = event => {
         event.preventDefault();
         setUser({
+            ...user,
             [event.target.name]: event.target.value
         })
     }
@@ -53,6 +53,7 @@ const Signup = () => {
                                 type="text"
                                 className="form-control"
                                 placeholder="Name"
+                                name="name"
                                 value={user.name}
                                 onChange={handleChange} />
                         </div>
@@ -62,6 +63,7 @@ const Signup = () => {
                                 type="email"
                                 className="form-control"
                                 placeholder="Email"
+                                name="email"
                                 value={user.email}
                                 onChange={handleChange} />
                         </div>
@@ -71,6 +73,7 @@ const Signup = () => {
                                 type="password"
                                 placeholder="Password"
                                 className="form-control"
+                                name="password"
                                 value={user.password}
                                 onChange={handleChange} />
                         </div>
