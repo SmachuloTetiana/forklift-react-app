@@ -1,5 +1,6 @@
 const initialState = {
-    currentUser: null
+    currentUser: null,
+    registerUser: null
 };
 
 const authReducer = (state = initialState, action) => {
@@ -8,7 +9,12 @@ const authReducer = (state = initialState, action) => {
             return {
                 ...state,
                 currentUser: action.payload
-            }        
+            }  
+        case 'SIGNUP':
+            return {
+                ...state,
+                registerUser: action.payload
+            }  
         default:
             return state;
     }

@@ -13,7 +13,7 @@ const Navbar = ({ currentUser }) => {
             .auth()
             .signOut()
             .then(() => {
-                dispatch(setCurrentUser())
+                dispatch(setCurrentUser(null))
             })
     }
 
@@ -41,7 +41,10 @@ const Navbar = ({ currentUser }) => {
                                 <NavLink activeClassName="active" className="nav-link" to="/sign-in">Sign In</NavLink>
                             </li>
                         )
-                    }
+                    }                    
+                    <li className="nav-item">
+                        <NavLink activeClassName="active" className="nav-link" to="/signup">Signup</NavLink>
+                    </li>
                     <li className="nav-item">
                         <NavLink activeClassName="active" className="nav-link" exact to='/list'>List</NavLink>
                     </li>

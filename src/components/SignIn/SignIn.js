@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { myFirebase } from '../../firebase';
 import { setCurrentUser } from '../../actions';
-import {Redirect} from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 
 const SignIn = () => {
@@ -47,7 +47,7 @@ const SignIn = () => {
                     <form>
                         <h1 className="title text-center">Sign In</h1>
                         <div className="form-group">
-                            <label htmlFor="email">E-mail:</label>
+                            <label htmlFor="email">E-mail</label>
                             <input 
                                 type="email"
                                 className="form-control"
@@ -56,7 +56,7 @@ const SignIn = () => {
                                 onChange={event => setEmail(event.target.value)} />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="password">Password:</label>
+                            <label htmlFor="password">Password</label>
                             <input 
                                 type="password"
                                 placeholder="Password"
@@ -68,6 +68,7 @@ const SignIn = () => {
                             type="button"
                             className="btn btn-primary"
                             onClick={handleSignIn}>SignIn</button>
+                        <a href="">Don't have an account yet? Sign up</a>
                     </form>
                 </div>
             </div>
