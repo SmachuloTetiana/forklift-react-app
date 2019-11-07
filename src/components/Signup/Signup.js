@@ -8,7 +8,9 @@ const Signup = () => {
     const [user, setUser] = useState({
         name: '',
         email: '',
-        password: ''
+        password: '',
+        confirmPassword: '',
+        error: null
     });
 
     const handleChange = event => {
@@ -29,8 +31,8 @@ const Signup = () => {
                 dispatch(setRegisterUser(resp));
                 console.log('Account created')
             })
-            .catch(error => {
-                dispatch(setRegisterUser(error))
+            .catch(e => {
+                setUser({error: e.message})
             })
     }
 
@@ -46,42 +48,57 @@ const Signup = () => {
 
                 <div className="col-md-6 col-12">
                     <form>
-                        <h1 className="title text-center">Signup</h1>
+                        <h1 className="title text-center">Sign Up</h1>
                         <div className="form-group">
-                            <label htmlFor="name">Name</label>
                             <input 
                                 type="text"
                                 className="form-control"
                                 placeholder="Name"
                                 name="name"
                                 value={user.name}
+                                required
                                 onChange={handleChange} />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="email">E-mail</label>
                             <input 
                                 type="email"
                                 className="form-control"
                                 placeholder="Email"
                                 name="email"
                                 value={user.email}
+                                required
                                 onChange={handleChange} />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="password">Password</label>
                             <input 
                                 type="password"
                                 placeholder="Password"
                                 className="form-control"
                                 name="password"
+                                required
                                 value={user.password}
                                 onChange={handleChange} />
+                        </div>
+                        <div className="form-group">
+                            <input 
+                                type="password"
+                                placeholder="Confirm Password"
+                                className="form-control"
+                                name="confirmPassword"
+                                required
+                                value={user.confirmPassword}
+                                onChange={handleChange} />
+                            {
+                                user.error !== null ? (
+                                    <p className="Error-message">{user.error}</p>
+                                ) : null
+                            }
                         </div>
                         <button
                             type="button"
                             className="btn btn-primary"
                             onClick={handleSignUp}>
-                                Signup
+                                Sign Up
                         </button>
                     </form>
                 </div>
