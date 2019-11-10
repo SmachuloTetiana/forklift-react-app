@@ -68,7 +68,7 @@ const SignIn = () => {
                             type="button"
                             className="btn btn-primary"
                             onClick={handleSignIn}>SignIn</button>
-                        <a href="">Don't have an account yet? Sign up</a>
+                        <a href="/">Don't have an account yet? Sign up</a>
                     </form>
                 </div>
             </div>
