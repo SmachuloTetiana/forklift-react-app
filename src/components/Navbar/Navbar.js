@@ -6,7 +6,6 @@ import { myFirebase } from '../../firebase';
 import { setCurrentUser } from '../../actions';
 
 const Navbar = ({ currentUser }) => {
-
     const dispatch = useDispatch();
     const handleSignOut = () => {
         myFirebase
@@ -43,7 +42,7 @@ const Navbar = ({ currentUser }) => {
                         )
                     }                    
                     <li className="nav-item">
-                        <NavLink activeClassName="active" className="nav-link" to="/signup">Signup</NavLink>
+                        <NavLink activeClassName="active" className="nav-link" to="/sign-up">Sign Up</NavLink>
                     </li>
                     <li className="nav-item">
                         <NavLink activeClassName="active" className="nav-link" exact to='/list'>List</NavLink>

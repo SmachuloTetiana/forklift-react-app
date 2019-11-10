@@ -20,9 +20,7 @@ const SignIn = () => {
                 dispatch(setCurrentUser(user));
                 setRedirect({
                     redirect: true
-                })
-                
-
+                })            
             })
             .catch(error => {
                 console.log(error)
@@ -68,7 +66,7 @@ const SignIn = () => {
                             type="button"
                             className="btn btn-primary"
                             onClick={handleSignIn}>SignIn</button>
-                        <a href="/">Don't have an account yet? Sign up</a>
+                        <a href="/sign-up">Don't have an account yet? Sign up</a>
                     </form>
                 </div>
             </div>
