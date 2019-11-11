@@ -48,34 +48,104 @@ const List = (props) => {
     return (
         <div className="container">
             <div className="Items-list">
-                <h2 className="title text-center">Навантажувачі власного виробництва</h2>
                 {
-                    props.currentUser ? (
+                    !props.currentUser ? (
                         <div>
-                            <p>You are logged in as {props.currentUser.user.email}. Now you can add some products of this list!</p>
+                            {/* <p>You are logged in as {props.currentUser.user.email}. Now you can add some products of this list!</p> */}
                             <form>
-                                <div className="form-group">
-                                    <label htmlFor="title">Title</label>
+                                <div className="form-group row">
+                                    <label htmlFor="title" className="col-md-3">Name</label>
                                     <input 
                                         type="text"
-                                        placeholder="Enter ttitle"
-                                        className="form-control"
+                                        placeholder="Enter Name"
+                                        className="form-control col-md-9"
                                         name="title"
                                         value={product.title}
                                         onChange={handleChangeInput} />
                                 </div>
-                                <div className="form-group">
-                                    <label htmlFor="description">Description</label>
+                                <div className="form-group row">
+                                    <label htmlFor="title" className="col-md-3">Вантажопідйомність, кг</label>
+                                    <input 
+                                        type="text"
+                                        placeholder="Enter Name"
+                                        className="form-control col-md-9"
+                                        name="title"
+                                        value={product.title}
+                                        onChange={handleChangeInput} />
+                                </div>
+                                <div className="form-group row">
+                                    <label htmlFor="title" className="col-md-3">Тип двигуна</label>
+                                    <input 
+                                        type="text"
+                                        placeholder="Enter Name"
+                                        className="form-control col-md-9"
+                                        name="title"
+                                        value={product.title}
+                                        onChange={handleChangeInput} />
+                                </div>
+                                <div className="form-group row">
+                                    <label htmlFor="title" className="col-md-3">Тип трансмісії</label>
+                                    <input 
+                                        type="text"
+                                        placeholder="Enter Name"
+                                        className="form-control col-md-9"
+                                        name="title"
+                                        value={product.title}
+                                        onChange={handleChangeInput} />
+                                </div>
+                                <div className="form-group row">
+                                    <label htmlFor="title" className="col-md-3">Висота підйому, мм</label>
+                                    <input 
+                                        type="text"
+                                        placeholder="Enter Name"
+                                        className="form-control col-md-9"
+                                        name="title"
+                                        value={product.title}
+                                        onChange={handleChangeInput} />
+                                </div>
+                                <div className="form-group row">
+                                    <label htmlFor="title" className="col-md-3">Вільний хід (+/-), мм</label>
+                                    <input 
+                                        type="text"
+                                        placeholder="Enter Name"
+                                        className="form-control col-md-9"
+                                        name="title"
+                                        value={product.title}
+                                        onChange={handleChangeInput} />
+                                </div>
+                                <div className="form-group row">
+                                    <label htmlFor="title" className="col-md-3">Тип шин</label>
+                                    <input 
+                                        type="text"
+                                        placeholder="Enter Name"
+                                        className="form-control col-md-9"
+                                        name="title"
+                                        value={product.title}
+                                        onChange={handleChangeInput} />
+                                </div>
+                                <div className="form-group row">
+                                    <label htmlFor="title" className="col-md-3">Довжина вил, мм</label>
+                                    <input 
+                                        type="text"
+                                        placeholder="Enter Name"
+                                        className="form-control col-md-9"
+                                        name="title"
+                                        value={product.title}
+                                        onChange={handleChangeInput} />
+                                </div>
+                                <div className="form-group row">
+                                    <label htmlFor="description" className="col-md-3">Description</label>
                                     <textarea 
                                         type="text"
-                                        placeholder="Enter description"
-                                        className="form-control"
+                                        placeholder="Enter Description"
+                                        className="form-control col-md-9"
                                         name="description"
                                         value={product.description}
                                         onChange={handleChangeInput}>
                                     </textarea>
                                 </div>
                                 <button
+                                    style={{'marginBottom': '50px'}}
                                     type="button"
                                     className="btn btn-primary">
                                     Add product
@@ -86,15 +156,9 @@ const List = (props) => {
                         <p>You are logged out, please sign in to add some products.</p>
                     )
                 }
-                <button 
-                    type="button" 
-                    style={{
-                        'marginBottom': '15px',
-                        'marginTop': '15px'
-                    }}
-                    className="btn btn-primary">
-                        Get List
-                </button>
+
+                <h2 className="title text-center">Навантажувачі власного виробництва</h2>
+
                 <ul>
                     {
                         Object.keys(data.users).map((el, index) => {
@@ -113,8 +177,7 @@ const List = (props) => {
 }
 
 const mapStateToProps = state => ({
-    currentUser: state.auth.currentUser,
-    item: state.forklift.item
+    currentUser: state.auth.currentUser
 });
 
 export default connect(mapStateToProps)(List);

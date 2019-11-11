@@ -10,7 +10,7 @@ const Signup = () => {
         email: '',
         password: '',
         confirmPassword: '',
-        error: null
+        error: {}
     });
 
     const handleChange = event => {
@@ -18,6 +18,29 @@ const Signup = () => {
         setUser({
             ...user,
             [event.target.name]: event.target.value
+        })
+    }
+
+    const validate = (e) => {
+        e.preventDefault();
+        const {name, value} = e.target;
+        switch (name) {
+            case 'name':
+                user.error.name = value.length < 3 && value.length > 0 ? 'Enter your name!' : '';
+                break;            
+            case 'email':
+                user.error.email = !value.includes('@') ? 'The email address is badly formatted.' : '';
+                break;
+            default:
+                break;
+        }
+
+        setUser({
+            ...user,
+            error: {
+                name: user.error.name,
+                email: user.error.email
+            }
         })
     }
 
@@ -56,8 +79,9 @@ const Signup = () => {
                                 placeholder="Name"
                                 name="name"
                                 value={user.name}
-                                required
-                                onChange={handleChange} />
+                                onChange={handleChange}
+                                onBlur={validate} />
+                            {user.error.name ? <p className="Error-message">{user.error.name}</p> : ''}
                         </div>
                         <div className="form-group">
                             <input 
@@ -66,8 +90,9 @@ const Signup = () => {
                                 placeholder="Email"
                                 name="email"
                                 value={user.email}
-                                required
-                                onChange={handleChange} />
+                                onChange={handleChange}
+                                onBlur={validate} />
+                            {user.error.email ? <p className="Error-message">{user.error.email}</p> : ''}
                         </div>
                         <div className="form-group">
                             <input 
@@ -88,11 +113,7 @@ const Signup = () => {
                                 required
                                 value={user.confirmPassword}
                                 onChange={handleChange} />
-                            {
-                                user.error !== null ? (
-                                    <p className="Error-message">{user.error}</p>
-                                ) : null
-                            }
+                            {/* {user.error ? <p className="Error-message">{user.error}</p> : null} */}
                         </div>
                         <button
                             type="button"
