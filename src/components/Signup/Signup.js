@@ -21,42 +21,56 @@ const Signup = () => {
         })
     }
 
-    const validate = (e) => {
-        e.preventDefault();
-        const {name, value} = e.target;
-        switch (name) {
-            case 'name':
-                user.error.name = value.length < 3 && value.length > 0 ? 'Enter your name!' : '';
-                break;            
-            case 'email':
-                user.error.email = !value.includes('@') ? 'The email address is badly formatted.' : '';
-                break;
-            default:
-                break;
+    const handleValidation = () => {
+        const {name, email, password, confirmPassword} = user;
+        let error = {};
+        let formIsValid = true;
+
+        if(name.length && name.length < 3) {
+            formIsValid = false;
+            error['name'] = "Name field cannot be empty and must at least 3 characters";
+        }
+        if(!/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email)) {
+            formIsValid = false;
+            error['email'] = "Please provide a valid email address";
+        }
+        if(password.length < 6) {
+            formIsValid = false;
+            error['password'] = "Password must be at least 6 characters";
+        }
+        if(confirmPassword !== password) {
+            formIsValid = false;
+            error['confirmPassword'] = "Password & Confirm Password don't match";
         }
 
         setUser({
             ...user,
-            error: {
-                name: user.error.name,
-                email: user.error.email
-            }
+            error: error
         })
+
+        return formIsValid;
     }
 
     const handleSignUp = event => {
         event.preventDefault();
+
         const {email, password} = user;
-        myFirebase
-            .auth()
-            .createUserWithEmailAndPassword(email, password)
-            .then(resp => {
-                dispatch(setRegisterUser(resp));
-                console.log('Account created')
-            })
-            .catch(e => {
-                setUser({error: e.message})
-            })
+        if(handleValidation()) {
+            myFirebase
+                .auth()
+                .createUserWithEmailAndPassword(email, password)
+                .then(resp => {
+                    dispatch(setRegisterUser(resp));
+                    console.log('validation successful');
+                })
+                .catch(e => {
+                    setUser({error: e.message})
+                })
+
+        } else {
+            console.log('validation failed')
+        }
+
     }
 
     return (
@@ -80,7 +94,7 @@ const Signup = () => {
                                 name="name"
                                 value={user.name}
                                 onChange={handleChange}
-                                onBlur={validate} />
+                                required/>
                             {user.error.name ? <p className="Error-message">{user.error.name}</p> : ''}
                         </div>
                         <div className="form-group">
@@ -91,7 +105,7 @@ const Signup = () => {
                                 name="email"
                                 value={user.email}
                                 onChange={handleChange}
-                                onBlur={validate} />
+                                required />
                             {user.error.email ? <p className="Error-message">{user.error.email}</p> : ''}
                         </div>
                         <div className="form-group">
@@ -103,6 +117,7 @@ const Signup = () => {
                                 required
                                 value={user.password}
                                 onChange={handleChange} />
+                            {user.error.password ? <p className="Error-message">{user.error.password}</p> : ''}
                         </div>
                         <div className="form-group">
                             <input 
@@ -113,7 +128,7 @@ const Signup = () => {
                                 required
                                 value={user.confirmPassword}
                                 onChange={handleChange} />
-                            {/* {user.error ? <p className="Error-message">{user.error}</p> : null} */}
+                            {user.error.confirmPassword ? <p className="Error-message">{user.error.confirmPassword}</p> : ''}
                         </div>
                         <button
                             type="button"
