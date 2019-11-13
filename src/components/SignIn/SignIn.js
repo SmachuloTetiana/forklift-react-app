@@ -50,7 +50,7 @@ const SignIn = () => {
                                 type="email"
                                 className="form-control"
                                 placeholder="Email"
-                                value={email}
+                                value={email || ''}
                                 onChange={event => setEmail(event.target.value)} />
                         </div>
                         <div className="form-group">
@@ -59,12 +59,13 @@ const SignIn = () => {
                                 type="password"
                                 placeholder="Password"
                                 className="form-control"
-                                value={password}
+                                value={password || ''}
                                 onChange={event => setPassword(event.target.value)} />
                         </div>
                         <button
                             type="button"
                             className="btn btn-primary"
+                            disabled={!email || !password}
                             onClick={handleSignIn}>SignIn</button>
                         <a href="/sign-up">Don't have an account yet? Sign up</a>
                     </form>

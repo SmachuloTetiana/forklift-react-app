@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import { myFirebase } from '../../firebase';
 
 const List = (props) => {
     const [data, setData] = useState({
@@ -9,7 +10,14 @@ const List = (props) => {
     });
 
     const [product, setProduct] = useState({
-        title: '',
+        model: '',
+        capacity: '',
+        power: '',
+        transmision: '',
+        lift_height: '',
+        free_lift: '',
+        tyres: '',
+        fork: '',
         description: ''
     });
 
@@ -34,11 +42,34 @@ const List = (props) => {
             chooseValue: e.target.value
         })
     }
-    console.log(select);
+
+    const handleAddForklift = async event => {
+        event.preventDefault();
+        try {
+            const itemsRef = await myFirebase.database().ref('items');
+
+            itemsRef.push({
+                model: product.model,
+                capacity: product.capacity,
+                power: product.power,
+                transmision: product.transmision,
+                lift_height: product.lift_height,
+                free_lift: product.free_lift,
+                tyres: product.tyres,
+                fork: product.fork,
+                description: product.description
+            })
+            console.log('add product successful')
+        }
+        catch (e) {
+            console.log(e.message)
+        }
+    }
 
     const handleChangeInput = event => {
         event.preventDefault();
         setProduct({
+            ...product,
             [event.target.name]: event.target.value
         })
     }
@@ -72,151 +103,202 @@ const List = (props) => {
         <div className="container">
             <div className="Items-list">
 
-                <div className="form-group">
-                    <label className="col-form-label">Choose type of product:</label>
-                    <select className="form-control" onChange={handleChangeSelect}>
-                        {
-                            select.options.map((item, key) => (
-                                <option value={item.value} key={key}>
-                                    {item.label}
-                                </option>
-                            ))
-                        }
-                    </select>
-                </div>
+                {!props.currentUser ? (
+                
+                <div>
+                    {/* <h2>You are logged in as {props.currentUser.user.email}. Now you can add some products of this list!</h2> */}
 
-                {
-                    !props.currentUser ? (
-                        <div className={`${select.chooseValue === 'forklift' ? 'd-block' : 'd-none'}`}>
-                            {/* <p>You are logged in as {props.currentUser.user.email}. Now you can add some products of this list!</p> */}
-                            <form>
-                                <div className="form-row">
-                                    <div className="form-group col-md-6">
-                                        <label htmlFor="title">Model:</label>
-                                        <input 
-                                            type="text"
-                                            placeholder="Enter Model"
-                                            className="form-control"
-                                            name="model"
-                                            value={product.title}
-                                            onChange={handleChangeInput} />
-                                    </div>
-                                    <div className="form-group col-md-6">
-                                        <label htmlFor="title">Capacity, kg:</label>
-                                        <input 
-                                            type="text"
-                                            placeholder="Enter Capacity"
-                                            className="form-control"
-                                            name="capacity"
-                                            value={product.title}
-                                            onChange={handleChangeInput} />
-                                    </div>
-                                </div>
+                    <div className="form-group">
+                        <label className="col-form-label">Choose type of product:</label>
+                        <select className="form-control" onChange={handleChangeSelect}>
+                            {
+                                select.options.map((item, key) => (
+                                    <option value={item.value} key={key}>
+                                        {item.label}
+                                    </option>
+                                ))
+                            }
+                        </select>                    
+                    </div>
 
-                                <div className="form-row">
-                                    <div className="form-group col-md-6">
-                                        <label htmlFor="title">Power Type:</label>
-                                        <input 
-                                            type="text"
-                                            placeholder="Power Type"
-                                            className="form-control"
-                                            name="power"
-                                            value={product.title}
-                                            onChange={handleChangeInput} />
-                                    </div>
-                                    <div className="form-group col-md-6">
-                                        <label htmlFor="title">Type of transmision:</label>
-                                        <input 
-                                            type="text"
-                                            placeholder="Type of transmision"
-                                            className="form-control"
-                                            name="transmision"
-                                            value={product.title}
-                                            onChange={handleChangeInput} />
-                                    </div>
-                                </div>
-
-                                <div className="form-row">                                
-                                    <div className="form-group col-md-6">
-                                        <label htmlFor="title">Lift height, mm:</label>
-                                        <input 
-                                            type="text"
-                                            placeholder="Lift height"
-                                            className="form-control"
-                                            name="lift_height"
-                                            value={product.title}
-                                            onChange={handleChangeInput} />
-                                    </div>
-                                    <div className="form-group col-md-6">
-                                        <label htmlFor="title">Free lift (+/-), mm:</label>
-                                        <input 
-                                            type="text"
-                                            placeholder="Free lift"
-                                            className="form-control"
-                                            name="free_lift"
-                                            value={product.title}
-                                            onChange={handleChangeInput} />
-                                    </div>
-                                </div>
-
-                                <div className="form-row">
-                                    <div className="form-group col-md-6">
-                                        <label htmlFor="title">Tyres type:</label>
-                                        <input 
-                                            type="text"
-                                            placeholder="Tyres type"
-                                            className="form-control"
-                                            name="tyres"
-                                            value={product.title}
-                                            onChange={handleChangeInput} />
-                                    </div>
-                                    <div className="form-group col-md-6">
-                                        <label htmlFor="title">Fork, mm:</label>
-                                        <input 
-                                            type="text"
-                                            placeholder="Fork"
-                                            className="form-control"
-                                            name="fork"
-                                            value={product.title}
-                                            onChange={handleChangeInput} />
-                                    </div>
-                                </div>
-
-                                <div className="form-group">
-                                    <label htmlFor="description">Detail information:</label>
-                                    <textarea 
+                    <div className={`${select.chooseValue === 'forklift' ? 'd-block' : 'd-none'}`}>
+                        <form>
+                            <div className="form-row">
+                                <div className="form-group col-md-6">
+                                    <label htmlFor="model">Model:</label>
+                                    <input 
                                         type="text"
-                                        placeholder="Detail information"
+                                        placeholder="Model"
                                         className="form-control"
-                                        name="description"
-                                        value={product.description}
-                                        onChange={handleChangeInput}>
-                                    </textarea>
+                                        name="model"
+                                        value={product.model}
+                                        onChange={handleChangeInput} />
+                                </div>
+                                <div className="form-group col-md-6">
+                                    <label htmlFor="capacity">Capacity, kg:</label>
+                                    <input 
+                                        type="text"
+                                        placeholder="Capacity"
+                                        className="form-control"
+                                        name="capacity"
+                                        value={product.capacity}
+                                        onChange={handleChangeInput} />
+                                </div>
+                            </div>
+
+                            <div className="form-row">
+                                <div className="form-group col-md-6">
+                                    <label htmlFor="power">Power Type:</label>
+                                    <input 
+                                        type="text"
+                                        placeholder="Power Type"
+                                        className="form-control"
+                                        name="power"
+                                        value={product.power}
+                                        onChange={handleChangeInput} />
+                                </div>
+                                <div className="form-group col-md-6">
+                                    <label htmlFor="transmision">Type of transmision:</label>
+                                    <input 
+                                        type="text"
+                                        placeholder="Type of transmision"
+                                        className="form-control"
+                                        name="transmision"
+                                        value={product.transmision}
+                                        onChange={handleChangeInput} />
+                                </div>
+                            </div>
+
+                            <div className="form-row">                                
+                                <div className="form-group col-md-6">
+                                    <label htmlFor="lift_height">Lift height, mm:</label>
+                                    <input 
+                                        type="text"
+                                        placeholder="Lift height"
+                                        className="form-control"
+                                        name="lift_height"
+                                        value={product.lift_height}
+                                        onChange={handleChangeInput} />
+                                </div>
+                                <div className="form-group col-md-6">
+                                    <label htmlFor="free_lift">Free lift (+/-), mm:</label>
+                                    <input 
+                                        type="text"
+                                        placeholder="Free lift"
+                                        className="form-control"
+                                        name="free_lift"
+                                        value={product.free_lift}
+                                        onChange={handleChangeInput} />
+                                </div>
+                            </div>
+
+                            <div className="form-row">
+                                <div className="form-group col-md-6">
+                                    <label htmlFor="tyres">Tyres type:</label>
+                                    <input 
+                                        type="text"
+                                        placeholder="Tyres type"
+                                        className="form-control"
+                                        name="tyres"
+                                        value={product.tyres}
+                                        onChange={handleChangeInput} />
+                                </div>
+                                <div className="form-group col-md-6">
+                                    <label htmlFor="fork">Fork, mm:</label>
+                                    <input 
+                                        type="text"
+                                        placeholder="Fork"
+                                        className="form-control"
+                                        name="fork"
+                                        value={product.fork}
+                                        onChange={handleChangeInput} />
+                                </div>
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="description">Detail information:</label>
+                                <textarea 
+                                    type="text"
+                                    placeholder="Detail information"
+                                    className="form-control"
+                                    name="description"
+                                    value={product.description}
+                                    onChange={handleChangeInput}>
+                                </textarea>
+                            </div>
+
+                            <div className="d-flex justify-content-start">
+                                <button
+                                    type="button"
+                                    className="btn btn-primary"
+                                    onClick={handleAddForklift}>
+                                    Add Forklift
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div className={`${select.chooseValue === 'spare parts' ? 'd-block' : 'd-none'}`}>
+                        <form>
+                            <div className="form-row">
+                                <div className="form-group col-md-6">
+                                    <label>Model:</label>
+                                    <input 
+                                        type="text"
+                                        placeholder="Model"
+                                        className="form-control" />
                                 </div>
 
-                                <div className="d-flex justify-content-start">
-                                    <button
-                                        type="button"
-                                        className="btn btn-primary">
-                                        Add product
-                                    </button>
+                                <div className="form-group col-md-6">
+                                    <label>Producer:</label>
+                                    <input 
+                                        type="text"
+                                        placeholder="Producer"
+                                        className="form-control"/>
                                 </div>
-                            </form>
-                        </div>
-                    ) : (
-                        <p>You are logged out, please sign in to add some products.</p>
-                    )
+                            </div>
+
+                            <div className="form-group">
+                                <label>Detail information:</label>
+                                <textarea 
+                                    type="text"
+                                    placeholder="Detail information"
+                                    className="form-control">
+                                </textarea>
+                            </div>
+
+                            <div className="d-flex justify-content-start">
+                                <button
+                                    type="button"
+                                    className="btn btn-primary">
+                                    Add Spare Part
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+                ) : (
+                    <p>You are logged out, please sign in to add some products.</p>
+                )
                 }
 
                 <h2 className="title text-center" style={{marginTop: '50px', marginBottom: '30px'}}>Forklifts of own production</h2>
 
-                <ul>
+                <ul className="Product_list">
                     {
                         Object.keys(data.users).map((el, index) => {
                             return (
                                 <li key={index}> 
-                                    <span>{data.users[el].title}</span>
-                                    <p>{data.users[el].description}</p>
+                                    <span>{data.users[el].title || data.users[el].model}</span>
+                                    {data.users[el].capacity ? <p><strong>Capacity, kg:</strong> {data.users[el].capacity}</p> : ''}
+                                    {data.users[el].power ? <p><strong>Power type:</strong> {data.users[el].power}</p> : ''}
+                                    {data.users[el].transmision ? <p><strong>Type of transmision:</strong> {data.users[el].transmision}</p> : ''}
+                                    {data.users[el].lift_height ? <p><strong>Lift height, mm:</strong> {data.users[el].lift_height}</p> : ''}
+                                    {data.users[el].free_lift ? <p><strong>Free lift (+/-), mm:</strong> {data.users[el].free_lift}</p> : ''}
+                                    {data.users[el].tyres ? <p><strong>Tyres type:</strong> {data.users[el].tyres}</p> : ''}
+                                    {data.users[el].fork ? <p><strong>Fork, mm:</strong> {data.users[el].fork}</p> : ''}
+                                    {data.users[el].description ? <p><strong>Detail information: </strong> {data.users[el].description}</p> : ''}
                                 </li>
                             )
                         })

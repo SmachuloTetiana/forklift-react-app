@@ -1,24 +1,17 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import AboutUs from '../About Us/AboutUs';
 
-const Home = ({ currentUser }) => {
-    console.log(currentUser)
+const Home = () => {
     return (
         <div className="container">
-            <h1>Home</h1>
-            {
-                currentUser ? (
-                    <p>You are logged in as {currentUser.user.email}</p>
-                ) : (
-                    <p>You are logged out, please sign in.</p>
-                )
-            }
+            <div className="Banner">
+                <div className="bg-image"></div>
+                <p>Manufacturer of forklifts №1 in Ukraine!</p>
+            </div>
+
+            <AboutUs />
         </div>
     )
 }
 
-const mapStateToProps = state => ({
-    currentUser: state.auth.currentUser
-});
-
-export default connect(mapStateToProps)(Home);
+export default Home;

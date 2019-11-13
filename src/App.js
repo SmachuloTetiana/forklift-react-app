@@ -11,7 +11,7 @@ import Signup from './components/Signup/Signup';
 
 function App() {
   return (
-    <div className="container-fluid">
+    <div className="container-fluid px-0">
       <Navbar />
       <Switch>
         <Route path="/" exact component={Home} />
