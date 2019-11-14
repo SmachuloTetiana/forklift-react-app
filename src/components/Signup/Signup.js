@@ -54,23 +54,19 @@ const Signup = () => {
     const handleSignUp = event => {
         event.preventDefault();
 
-        const {email, password} = user;
-        if(handleValidation()) {
-            myFirebase
-                .auth()
-                .createUserWithEmailAndPassword(email, password)
-                .then(resp => {
-                    dispatch(setRegisterUser(resp));
-                    console.log('validation successful');
-                })
-                .catch(e => {
-                    setUser({error: e.message})
-                })
+        try {
+            if(handleValidation()){
+                const {email, password} = user;
+                const response = myFirebase.auth().createUserWithEmailAndPassword(email, password);
+                
+                dispatch(setRegisterUser(response));
+                console.log('validation saccessful')   
+            }        
 
-        } else {
+        } catch (e) {
+            setUser({error: e.message})
             console.log('validation failed')
         }
-
     }
 
     return (
@@ -84,8 +80,9 @@ const Signup = () => {
                 </div>
 
                 <div className="col-md-6 col-12">
+                    <h1 className="title text-center">Sign Up</h1>
+
                     <form>
-                        <h1 className="title text-center">Sign Up</h1>
                         <div className="form-group">
                             <input 
                                 type="text"
@@ -94,7 +91,7 @@ const Signup = () => {
                                 name="name"
                                 value={user.name}
                                 onChange={handleChange}
-                                required/>
+                                required />
                             {user.error.name ? <p className="Error-message">{user.error.name}</p> : ''}
                         </div>
                         <div className="form-group">

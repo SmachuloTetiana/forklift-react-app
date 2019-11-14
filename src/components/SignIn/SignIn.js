@@ -12,20 +12,18 @@ const SignIn = () => {
     const [redirect, setRedirect] = useState();
     const [error, setError] = useState();
     
-    const handleSignIn = event => {
+    const handleSignIn = async event => {
         event.preventDefault();
-        myFirebase
-            .auth()
-            .signInWithEmailAndPassword(email, password)
-            .then(user => {
-                dispatch(setCurrentUser(user));
-                setRedirect({
-                    redirect: true
-                })            
-            })
-            .catch(e => {
-                setError(e.message)
-            })
+        try {
+            const user = await myFirebase.auth().signInWithEmailAndPassword(email, password);
+            dispatch(setCurrentUser(user));
+            setRedirect({
+                redirect: true
+            })     
+        } catch (e){
+            setError(e.message)
+        }
+            
     }
 
     if (redirect) {
