@@ -10,6 +10,7 @@ const SignIn = () => {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [redirect, setRedirect] = useState();
+    const [error, setError] = useState();
     
     const handleSignIn = event => {
         event.preventDefault();
@@ -22,8 +23,8 @@ const SignIn = () => {
                     redirect: true
                 })            
             })
-            .catch(error => {
-                console.log(error)
+            .catch(e => {
+                setError(e.message)
             })
     }
 
@@ -50,7 +51,8 @@ const SignIn = () => {
                                 type="email"
                                 className="form-control"
                                 placeholder="Email"
-                                value={email || ''}
+                                value={email}
+                                required
                                 onChange={event => setEmail(event.target.value)} />
                         </div>
                         <div className="form-group">
@@ -59,13 +61,16 @@ const SignIn = () => {
                                 type="password"
                                 placeholder="Password"
                                 className="form-control"
-                                value={password || ''}
+                                value={password}
+                                required
                                 onChange={event => setPassword(event.target.value)} />
                         </div>
+                        
+                        {error ? <p className="Error-message">{error}</p> : ''}
+
                         <button
                             type="button"
                             className="btn btn-primary"
-                            disabled={!email || !password}
                             onClick={handleSignIn}>SignIn</button>
                         <a href="/sign-up">Don't have an account yet? Sign up</a>
                     </form>

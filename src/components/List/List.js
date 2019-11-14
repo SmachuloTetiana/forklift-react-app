@@ -5,7 +5,7 @@ import { myFirebase } from '../../firebase';
 
 const List = (props) => {
     const [data, setData] = useState({
-        users: {},
+        products: {},
         isFetching: false
     });
 
@@ -18,17 +18,21 @@ const List = (props) => {
         free_lift: '',
         tyres: '',
         fork: '',
-        description: ''
+        description: '',
     });
 
     const [select, setSelect] = useState({
         options: [
             {
+                value: 'choose_type',
+                label: 'Choose type'
+            }, 
+            {
                 value: 'forklift',
                 label: 'Forklift'
             }, 
             {
-                value: 'spare parts',
+                value: 'spare_parts',
                 label: 'Spare Parts'
             }
         ],
@@ -57,8 +61,8 @@ const List = (props) => {
                 free_lift: product.free_lift,
                 tyres: product.tyres,
                 fork: product.fork,
-                description: product.description
-            })
+                description: product.description,
+            });
             console.log('add product successful')
         }
         catch (e) {
@@ -74,16 +78,24 @@ const List = (props) => {
         })
     }
 
+    const deleteProduct = event => {
+        event.preventDefault();
+
+        let index = event.target.value;
+
+        myFirebase.database().ref('items').child(index).remove();
+    }
+
     useEffect(() => {
         const fetchUsers = async () => {
             try {
                 setData({
-                    users: data.users,
+                    products: data.products,
                     isFetching: true
                 })
                 const response = await axios.get('https://forklift-bb1ea.firebaseio.com/items.json');
                 setData({
-                    users: response.data,
+                    products: response.data,
                     isFetching: false
                 })
                 console.log(response.data);
@@ -91,7 +103,7 @@ const List = (props) => {
             catch (e) {
                 console.log(e);
                 setData({
-                    users: data.users,
+                    products: data.products,
                     isFetching: false
                 })
             }
@@ -238,7 +250,7 @@ const List = (props) => {
                         </form>
                     </div>
 
-                    <div className={`${select.chooseValue === 'spare parts' ? 'd-block' : 'd-none'}`}>
+                    <div className={`${select.chooseValue === 'spare_parts' ? 'd-block' : 'd-none'}`}>
                         <form>
                             <div className="form-row">
                                 <div className="form-group col-md-6">
@@ -287,18 +299,28 @@ const List = (props) => {
 
                 <ul className="Product_list">
                     {
-                        Object.keys(data.users).map((el, index) => {
+                        Object.keys(data.products).map((el, key) => {
                             return (
-                                <li key={index}> 
-                                    <span>{data.users[el].title || data.users[el].model}</span>
-                                    {data.users[el].capacity ? <p><strong>Capacity, kg:</strong> {data.users[el].capacity}</p> : ''}
-                                    {data.users[el].power ? <p><strong>Power type:</strong> {data.users[el].power}</p> : ''}
-                                    {data.users[el].transmision ? <p><strong>Type of transmision:</strong> {data.users[el].transmision}</p> : ''}
-                                    {data.users[el].lift_height ? <p><strong>Lift height, mm:</strong> {data.users[el].lift_height}</p> : ''}
-                                    {data.users[el].free_lift ? <p><strong>Free lift (+/-), mm:</strong> {data.users[el].free_lift}</p> : ''}
-                                    {data.users[el].tyres ? <p><strong>Tyres type:</strong> {data.users[el].tyres}</p> : ''}
-                                    {data.users[el].fork ? <p><strong>Fork, mm:</strong> {data.users[el].fork}</p> : ''}
-                                    {data.users[el].description ? <p><strong>Detail information: </strong> {data.users[el].description}</p> : ''}
+                                <li key={key} className="d-flex flex-row align-items-center"> 
+                                    <div className="Product_list__information">
+                                        <span>{data.products[el].title || data.products[el].model}</span>
+                                        {data.products[el].capacity ? <p><strong>Capacity, kg:</strong> {data.products[el].capacity}</p> : ''}
+                                        {data.products[el].power ? <p><strong>Power type:</strong> {data.products[el].power}</p> : ''}
+                                        {data.products[el].transmision ? <p><strong>Type of transmision:</strong> {data.products[el].transmision}</p> : ''}
+                                        {data.products[el].lift_height ? <p><strong>Lift height, mm:</strong> {data.products[el].lift_height}</p> : ''}
+                                        {data.products[el].free_lift ? <p><strong>Free lift (+/-), mm:</strong> {data.products[el].free_lift}</p> : ''}
+                                        {data.products[el].tyres ? <p><strong>Tyres type:</strong> {data.products[el].tyres}</p> : ''}
+                                        {data.products[el].fork ? <p><strong>Fork, mm:</strong> {data.products[el].fork}</p> : ''}
+                                        {data.products[el].description ? <p><strong>Detail information: </strong> {data.products[el].description}</p> : ''}
+                                    </div>
+
+                                    <button 
+                                        type="button" 
+                                        className="btn btn-primary delete-btn"
+                                        value={el}
+                                        onClick={deleteProduct}>
+                                            Delete
+                                    </button>
                                 </li>
                             )
                         })

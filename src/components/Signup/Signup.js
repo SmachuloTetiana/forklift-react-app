@@ -26,7 +26,7 @@ const Signup = () => {
         let error = {};
         let formIsValid = true;
 
-        if(name.length && name.length < 3) {
+        if(name.length === 0 || name.length < 3) {
             formIsValid = false;
             error['name'] = "Name field cannot be empty and must at least 3 characters";
         }

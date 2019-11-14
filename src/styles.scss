@@ -170,6 +170,14 @@ body {
     p {
         margin: 0;
     }
+
+    img {
+        filter: opacity(50%);
+    }
+
+    .delete-btn {
+        margin-left: auto;
+    }
 }
 
 /** End Account **/
