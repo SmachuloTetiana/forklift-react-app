@@ -80,6 +80,14 @@ const List = (props) => {
 
     function deleteProduct(id) {
         myFirebase.database().ref(`items/${id}`).remove();
+
+        const itemsRef = myFirebase.database().ref('items');
+        
+        itemsRef.on('value', snapshot => {
+            setData({
+                products: snapshot.val()
+            })
+        })
     }
 
     useEffect(() => {
