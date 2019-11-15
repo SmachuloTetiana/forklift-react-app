@@ -35,15 +35,18 @@ const Navbar = ({ currentUser }) => {
                     {
                         currentUser ? (
                             <button type="button" className="btn btn-primary" onClick={handleSignOut}>Sign Out</button>
-                        ) : (                            
-                            <li className="nav-item">
-                                <NavLink activeClassName="active" className="nav-link" to="/sign-in">Sign In</NavLink>
-                            </li>
+                        ) : (   
+                            <div className="d-flex flex-row">                      
+                                <li className="nav-item">
+                                    <NavLink activeClassName="active" className="nav-link" to="/sign-in">Sign In</NavLink>
+                                </li>     
+
+                                <li className="nav-item">
+                                    <NavLink activeClassName="active" className="nav-link" to="/sign-up">Sign Up</NavLink>
+                                </li>
+                            </div>   
                         )
-                    }                    
-                    <li className="nav-item">
-                        <NavLink activeClassName="active" className="nav-link" to="/sign-up">Sign Up</NavLink>
-                    </li>
+                    }  
                     <li className="nav-item">
                         <NavLink activeClassName="active" className="nav-link" exact to='/list'>List</NavLink>
                     </li>

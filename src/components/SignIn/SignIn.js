@@ -49,7 +49,7 @@ const SignIn = () => {
                                 type="email"
                                 className="form-control"
                                 placeholder="Email"
-                                value={email}
+                                value={email || ''}
                                 required
                                 onChange={event => setEmail(event.target.value)} />
                         </div>
@@ -59,7 +59,7 @@ const SignIn = () => {
                                 type="password"
                                 placeholder="Password"
                                 className="form-control"
-                                value={password}
+                                value={password || ''}
                                 required
                                 onChange={event => setPassword(event.target.value)} />
                         </div>

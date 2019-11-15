@@ -37,7 +37,9 @@ const List = (props) => {
             }
         ],
         chooseValue: ''
-    })
+    });
+
+    const itemsRef = myFirebase.database().ref('items');
 
     const handleChangeSelect = e => {
         e.preventDefault();
@@ -63,6 +65,13 @@ const List = (props) => {
                 fork: product.fork,
                 description: product.description,
             });
+
+            itemsRef.on('value', snapshot => {
+                setData({
+                    products: snapshot.val()
+                })
+            });
+
             console.log('add product successful')
         }
         catch (e) {
@@ -81,8 +90,6 @@ const List = (props) => {
     function deleteProduct(id) {
         myFirebase.database().ref(`items/${id}`).remove();
 
-        const itemsRef = myFirebase.database().ref('items');
-        
         itemsRef.on('value', snapshot => {
             setData({
                 products: snapshot.val()
@@ -119,10 +126,10 @@ const List = (props) => {
         <div className="container">
             <div className="Items-list">
 
-                {!props.currentUser ? (
+                {props.currentUser ? (
                 
                 <div>
-                    {/* <h2>You are logged in as {props.currentUser.user.email}. Now you can add some products of this list!</h2> */}
+                    <h4>You are logged in as {props.currentUser.user.email}. Now you can add some products of this list!</h4>
 
                     <div className="form-group">
                         <label className="col-form-label">Choose type of product:</label>
@@ -295,11 +302,11 @@ const List = (props) => {
                     </div>
                 </div>
                 ) : (
-                    <p>You are logged out, please sign in to add some products.</p>
+                    <h4>You are logged out, please sign in to add some products.</h4>
                 )
                 }
 
-                <h2 className="title text-center" style={{marginTop: '50px', marginBottom: '30px'}}>Forklifts of own production</h2>
+                <h2 className="title text-center" style={{marginTop: '50px', marginBottom: '30px'}}>Own production forklifts</h2>
 
                 <ul className="Product_list">
                     {data.products ? (
@@ -318,12 +325,14 @@ const List = (props) => {
                                         {data.products[el].description ? <p><strong>Detail information: </strong> {data.products[el].description}</p> : ''}
                                     </div>
 
-                                    <button 
-                                        type="button" 
-                                        className="btn btn-primary delete-btn"
-                                        onClick={() => deleteProduct(el)}>
-                                            Delete
-                                    </button>
+                                    {props.currentUser ? (
+                                        <button 
+                                            type="button" 
+                                            className="btn btn-primary delete-btn"
+                                            onClick={() => deleteProduct(el)}>
+                                                Delete
+                                        </button>
+                                    ) : null}
                                 </li>
                             )
                         })
