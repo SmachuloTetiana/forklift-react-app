@@ -78,12 +78,8 @@ const List = (props) => {
         })
     }
 
-    const deleteProduct = event => {
-        event.preventDefault();
-
-        let index = event.target.value;
-
-        myFirebase.database().ref('items').child(index).remove();
+    function deleteProduct(id) {
+        myFirebase.database().ref(`items/${id}`).remove();
     }
 
     useEffect(() => {
@@ -298,7 +294,7 @@ const List = (props) => {
                 <h2 className="title text-center" style={{marginTop: '50px', marginBottom: '30px'}}>Forklifts of own production</h2>
 
                 <ul className="Product_list">
-                    {
+                    {data.products ? (
                         Object.keys(data.products).map((el, key) => {
                             return (
                                 <li key={key} className="d-flex flex-row align-items-center"> 
@@ -317,13 +313,13 @@ const List = (props) => {
                                     <button 
                                         type="button" 
                                         className="btn btn-primary delete-btn"
-                                        value={el}
-                                        onClick={deleteProduct}>
+                                        onClick={() => deleteProduct(el)}>
                                             Delete
                                     </button>
                                 </li>
                             )
                         })
+                    ) : null
                     }
                 </ul>
             </div>
