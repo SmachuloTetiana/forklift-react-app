@@ -129,7 +129,7 @@ const List = (props) => {
                 {props.currentUser ? (
                 
                 <div>
-                    <h4>You are logged in as {props.currentUser.user.email}. Now you can add some products of this list!</h4>
+                    <h4>You are logged in as {props.currentUser.email}. Now you can add some products of this list!</h4>
 
                     <div className="form-group">
                         <label className="col-form-label">Choose type of product:</label>

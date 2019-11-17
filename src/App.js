@@ -8,17 +8,20 @@ import Home from './components/Home/Home';
 import Navbar from './components/Navbar/Navbar';
 import List from './components/List/List';
 import Signup from './components/Signup/Signup';
+import { AuthProvider } from './components/Auth/Auth';
 
 function App() {
   return (
     <div className="container-fluid px-0">
-      <Navbar />
-      <Switch>
-        <Route path="/" exact component={Home} />
-        <Route path="/sign-in" component={SignIn} />
-        <Route path="/sign-up" component={Signup} />
-        <Route path="/list" component={List} />
-      </Switch>
+      <AuthProvider>
+        <Navbar />
+        <Switch>
+          <Route path="/" exact component={Home} />
+          <Route path="/sign-in" component={SignIn} />
+          <Route path="/sign-up" component={Signup} />
+          <Route path="/list" component={List} />
+        </Switch>
+      </AuthProvider>
     </div>
   );
 }
