@@ -41,7 +41,7 @@ const SignIn = () => {
                 </div>
 
                 <div className="col-md-6 col-12">
-                    <form>
+                    <form onSubmit={handleSignIn}>
                         <h1 className="title text-center">Sign In</h1>
                         <div className="form-group">
                             <label htmlFor="email">E-mail</label>
@@ -49,6 +49,7 @@ const SignIn = () => {
                                 type="email"
                                 className="form-control"
                                 placeholder="Email"
+                                name="email"
                                 value={email || ''}
                                 required
                                 onChange={event => setEmail(event.target.value)} />
@@ -58,6 +59,7 @@ const SignIn = () => {
                             <input 
                                 type="password"
                                 placeholder="Password"
+                                name="password"
                                 className="form-control"
                                 value={password || ''}
                                 required
@@ -67,9 +69,11 @@ const SignIn = () => {
                         {error ? <p className="Error-message">{error}</p> : ''}
 
                         <button
-                            type="button"
+                            type="submit"
                             className="btn btn-primary"
-                            onClick={handleSignIn}>SignIn</button>
+                            disabled={!email || !password}>
+                                SignIn
+                        </button>
                         <a href="/sign-up">Don't have an account yet? Sign up</a>
                     </form>
                 </div>
