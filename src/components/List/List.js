@@ -109,7 +109,6 @@ const List = (props) => {
                     products: response.data,
                     isFetching: false
                 })
-                console.log(response.data);
             }
             catch (e) {
                 console.log(e);
@@ -121,6 +120,15 @@ const List = (props) => {
         }
         fetchUsers();
     }, []);
+
+    const filterList = event => {
+        event.preventDefault();
+        const item = data.products;
+        setData({
+            products: Object.values(item).filter(key => key.power && key.power.toLowerCase().search(event.target.value.toLowerCase()) !== -1)
+        })
+        console.log(data.products)
+    }
 
     return (
         <div className="container">
@@ -307,6 +315,13 @@ const List = (props) => {
                 }
 
                 <h2 className="title text-center" style={{marginTop: '50px', marginBottom: '30px'}}>Own production forklifts</h2>
+
+                <div className="toolbar">
+                    <form>
+                        <label>Filter by power type:</label>
+                        <input type="text" placeholder="Search" onChange={filterList}/>
+                    </form>
+                </div>
 
                 <ul className="Product_list">
                     {data.products ? (
