@@ -121,13 +121,18 @@ const List = (props) => {
         fetchUsers();
     }, []);
 
-    const filterList = event => {
-        event.preventDefault();
-        const item = data.products;
-        setData({
-            products: Object.values(item).filter(key => key.power && key.power.toLowerCase().search(event.target.value.toLowerCase()) !== -1)
-        })
-        console.log(data.products)
+    const filterList = newFilter => {
+        if(newFilter) {
+            setData({
+                products: Object.values(data.products).filter(key => key.power && key.power.toLowerCase().search(newFilter.toLowerCase()) !== -1)
+            })
+        } else {
+            itemsRef.on('value', snapshot => {
+                setData({
+                    products: snapshot.val()
+                })
+            })
+        }
     }
 
     return (
@@ -153,7 +158,7 @@ const List = (props) => {
                     </div>
 
                     <div className={`${select.chooseValue === 'forklift' ? 'd-block' : 'd-none'}`}>
-                        <form>
+                        <form onSubmit={handleAddForklift}>
                             <div className="form-row">
                                 <div className="form-group col-md-6">
                                     <label htmlFor="model">Model:</label>
@@ -162,6 +167,7 @@ const List = (props) => {
                                         placeholder="Model"
                                         className="form-control"
                                         name="model"
+                                        required
                                         value={product.model}
                                         onChange={handleChangeInput} />
                                 </div>
@@ -260,9 +266,8 @@ const List = (props) => {
 
                             <div className="d-flex justify-content-start">
                                 <button
-                                    type="button"
-                                    className="btn btn-primary"
-                                    onClick={handleAddForklift}>
+                                    type="submit"
+                                    className="btn btn-primary">
                                     Add Forklift
                                 </button>
                             </div>
@@ -318,8 +323,7 @@ const List = (props) => {
 
                 <div className="toolbar">
                     <form>
-                        <label>Filter by power type:</label>
-                        <input type="text" placeholder="Search" onChange={filterList}/>
+                        <input type="text" placeholder="Filter by type" className="form-control" onChange={e => filterList(e.target.value)}/>
                     </form>
                 </div>
 

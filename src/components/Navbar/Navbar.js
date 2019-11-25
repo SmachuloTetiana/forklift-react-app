@@ -32,11 +32,12 @@ const Navbar = ({ currentUser }) => {
                     <li className="nav-item">
                         <NavLink activeClassName="active" className="nav-link" exact to='/'>Home</NavLink>
                     </li>
+                    <li className="nav-item">
+                        <NavLink activeClassName="active" className="nav-link" exact to='/list'>List</NavLink>
+                    </li>
                     {
-                        currentUser ? (
-                            <button type="button" className="btn btn-primary" onClick={handleSignOut}>Sign Out</button>
-                        ) : (   
-                            <div className="d-flex flex-row">                      
+                        !currentUser ? (
+                            <React.Fragment>                      
                                 <li className="nav-item">
                                     <NavLink activeClassName="active" className="nav-link" to="/sign-in">Sign In</NavLink>
                                 </li>     
@@ -44,12 +45,11 @@ const Navbar = ({ currentUser }) => {
                                 <li className="nav-item">
                                     <NavLink activeClassName="active" className="nav-link" to="/sign-up">Sign Up</NavLink>
                                 </li>
-                            </div>   
+                            </React.Fragment>   
+                        ) : (   
+                            <button type="button" className="btn btn-primary signOutBtn ml-auto" onClick={handleSignOut}>Sign Out</button>
                         )
                     }  
-                    <li className="nav-item">
-                        <NavLink activeClassName="active" className="nav-link" exact to='/list'>List</NavLink>
-                    </li>
                 </ul>
             </div>
         </nav>

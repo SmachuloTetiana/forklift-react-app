@@ -64,6 +64,9 @@ body {
     margin-bottom: 50px;
 
     ul.navbar-nav {
+        flex-grow: inherit;
+        align-items: center;
+
         li {
             a.nav-link {
                 font-size: 20px;
@@ -90,6 +93,12 @@ body {
             left: -36px;
             letter-spacing: .06em;
         }
+    }
+
+    .signOutBtn {
+        background: $whiteColor;
+        border-color: $whiteColor;
+        color: $redColor;
     }
     
 }
