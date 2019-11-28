@@ -38,6 +38,8 @@ const List = (props) => {
         chooseValue: ''
     });
 
+    const [ value, setValue ] = useState();
+
     const dataRef = myFirebase.database().ref('items');
 
     const handleChangeSelect = e => {
@@ -81,10 +83,24 @@ const List = (props) => {
         myFirebase.database().ref(`items/${id}`).remove();
     }
 
-    function editProduct(id) {
-        // myFirebase.database().ref(`items/${id}`).update({
+    const handleChangeValue = event => {
+        event.preventDefault();
+        setValue({
+            ...value,
+            obj: {                
+                [event.target.name]: event.target.value
+            }
+        })
+    }
 
-        // });
+    const saveEditValue = () => {
+        myFirebase.database().ref(`items/${value.id}`).update({
+            capacity: value.obj.capacity
+        });
+    }
+
+    function editProduct(id, obj) {
+        setValue({id, obj})
     }
 
     useEffect(() => {
@@ -323,6 +339,19 @@ const List = (props) => {
                     </form>
                 </div>
 
+                {value ? (
+                    <React.Fragment>
+                    { Object.keys(value.obj).map((item, i) => (
+                        <div key={i}>
+                            <input type="text" name={item} value={value.obj[item]} onChange={handleChangeValue} />
+                        </div>
+                    ))}
+                    
+                    <button type="submit" onClick={saveEditValue}>Save Changes</button>
+
+                    </React.Fragment>                 
+                ) : null}
+
                 <ul className="Product_list">
                     {data.products ? (
                         Object.keys(data.products).map((key) => {
@@ -345,7 +374,7 @@ const List = (props) => {
                                             <button 
                                                 type="button" 
                                                 className="btn btn-primary"
-                                                onClick={() => editProduct(key)}>
+                                                onClick={() => editProduct(key, data.products[key])}>
                                                     Edit
                                             </button>
 
