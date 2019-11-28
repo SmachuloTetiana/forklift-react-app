@@ -39,7 +39,7 @@ const List = (props) => {
         chooseValue: ''
     });
 
-    const itemsRef = myFirebase.database().ref('items');
+    const dataRef = myFirebase.database().ref('items');
 
     const handleChangeSelect = e => {
         e.preventDefault();
@@ -49,12 +49,10 @@ const List = (props) => {
         })
     }
 
-    const handleAddForklift = async event => {
+    const handleAddForklift = event => {
         event.preventDefault();
         try {
-            const itemsRef = await myFirebase.database().ref('items');
-
-            itemsRef.push({
+            dataRef.push({
                 model: product.model,
                 capacity: product.capacity,
                 power: product.power,
@@ -65,13 +63,6 @@ const List = (props) => {
                 fork: product.fork,
                 description: product.description,
             });
-
-            itemsRef.on('value', snapshot => {
-                setData({
-                    products: snapshot.val()
-                })
-            });
-
             console.log('add product successful')
         }
         catch (e) {
@@ -89,25 +80,27 @@ const List = (props) => {
 
     function deleteProduct(id) {
         myFirebase.database().ref(`items/${id}`).remove();
+    }
 
-        itemsRef.on('value', snapshot => {
-            setData({
-                products: snapshot.val()
-            })
-        })
+    function editProduct(id) {
+        // myFirebase.database().ref(`items/${id}`).update({
+
+        // });
     }
 
     useEffect(() => {
-        const fetchUsers = async () => {
+        const fetchUsers = () => {
             try {
                 setData({
                     products: data.products,
                     isFetching: true
                 })
-                const response = await axios.get('https://forklift-bb1ea.firebaseio.com/items.json');
-                setData({
-                    products: response.data,
-                    isFetching: false
+
+                dataRef.on('value', snapshot => {
+                    setData({
+                        products: snapshot.val(),
+                        isFetching: false
+                    })
                 })
             }
             catch (e) {
@@ -127,7 +120,7 @@ const List = (props) => {
                 products: Object.values(data.products).filter(key => key.power && key.power.toLowerCase().search(newFilter.toLowerCase()) !== -1)
             })
         } else {
-            itemsRef.on('value', snapshot => {
+            dataRef.on('value', snapshot => {
                 setData({
                     products: snapshot.val()
                 })
@@ -278,26 +271,30 @@ const List = (props) => {
                         <form>
                             <div className="form-row">
                                 <div className="form-group col-md-6">
-                                    <label>Model:</label>
+                                    <label htmlFor="model">Model:</label>
                                     <input 
                                         type="text"
+                                        name="model"
+                                        required
                                         placeholder="Model"
                                         className="form-control" />
                                 </div>
 
                                 <div className="form-group col-md-6">
-                                    <label>Producer:</label>
+                                    <label htmlFor="producer">Producer:</label>
                                     <input 
                                         type="text"
+                                        name="producer"
                                         placeholder="Producer"
                                         className="form-control"/>
                                 </div>
                             </div>
 
                             <div className="form-group">
-                                <label>Detail information:</label>
+                                <label htmlFor="description">Detail information:</label>
                                 <textarea 
                                     type="text"
+                                    name="description"
                                     placeholder="Detail information"
                                     className="form-control">
                                 </textarea>
@@ -305,7 +302,7 @@ const List = (props) => {
 
                             <div className="d-flex justify-content-start">
                                 <button
-                                    type="button"
+                                    type="submit"
                                     className="btn btn-primary">
                                     Add Spare Part
                                 </button>
@@ -329,28 +326,37 @@ const List = (props) => {
 
                 <ul className="Product_list">
                     {data.products ? (
-                        Object.keys(data.products).map((el, key) => {
+                        Object.keys(data.products).map((key) => {
                             return (
-                                <li key={key} className="d-flex flex-row align-items-center"> 
+                                <li key={key} className="d-flex flex-row align-items-center justify-content-between"> 
                                     <div className="Product_list__information">
-                                        <span>{data.products[el].title || data.products[el].model}</span>
-                                        {data.products[el].capacity ? <p><strong>Capacity, kg:</strong> {data.products[el].capacity}</p> : ''}
-                                        {data.products[el].power ? <p><strong>Power type:</strong> {data.products[el].power}</p> : ''}
-                                        {data.products[el].transmision ? <p><strong>Type of transmision:</strong> {data.products[el].transmision}</p> : ''}
-                                        {data.products[el].lift_height ? <p><strong>Lift height, mm:</strong> {data.products[el].lift_height}</p> : ''}
-                                        {data.products[el].free_lift ? <p><strong>Free lift (+/-), mm:</strong> {data.products[el].free_lift}</p> : ''}
-                                        {data.products[el].tyres ? <p><strong>Tyres type:</strong> {data.products[el].tyres}</p> : ''}
-                                        {data.products[el].fork ? <p><strong>Fork, mm:</strong> {data.products[el].fork}</p> : ''}
-                                        {data.products[el].description ? <p><strong>Detail information: </strong> {data.products[el].description}</p> : ''}
+                                        <span>{data.products[key].title || data.products[key].model}</span>
+                                        {data.products[key].capacity ? <p><strong>Capacity, kg:</strong> {data.products[key].capacity}</p> : ''}
+                                        {data.products[key].power ? <p><strong>Power type:</strong> {data.products[key].power}</p> : ''}
+                                        {data.products[key].transmision ? <p><strong>Type of transmision:</strong> {data.products[key].transmision}</p> : ''}
+                                        {data.products[key].lift_height ? <p><strong>Lift height, mm:</strong> {data.products[key].lift_height}</p> : ''}
+                                        {data.products[key].free_lift ? <p><strong>Free lift (+/-), mm:</strong> {data.products[key].free_lift}</p> : ''}
+                                        {data.products[key].tyres ? <p><strong>Tyres type:</strong> {data.products[key].tyres}</p> : ''}
+                                        {data.products[key].fork ? <p><strong>Fork, mm:</strong> {data.products[key].fork}</p> : ''}
+                                        {data.products[key].description ? <p><strong>Detail information: </strong> {data.products[key].description}</p> : ''}
                                     </div>
 
                                     {props.currentUser ? (
-                                        <button 
-                                            type="button" 
-                                            className="btn btn-primary delete-btn"
-                                            onClick={() => deleteProduct(el)}>
-                                                Delete
-                                        </button>
+                                        <div className="d-flex flex-row btn-container">
+                                            <button 
+                                                type="button" 
+                                                className="btn btn-primary"
+                                                onClick={() => editProduct(key)}>
+                                                    Edit
+                                            </button>
+
+                                            <button 
+                                                type="button" 
+                                                className="btn btn-primary delete-btn"
+                                                onClick={() => deleteProduct(key)}>
+                                                    Delete
+                                            </button>
+                                        </div>
                                     ) : null}
                                 </li>
                             )
