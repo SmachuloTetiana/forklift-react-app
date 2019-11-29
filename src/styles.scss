@@ -185,8 +185,11 @@ body {
         filter: opacity(50%);
     }
 
-    .delete-btn {
-        margin-left: auto;
+    .btn-container {
+    
+        .btn-primary {
+            margin: 0 0 0 15px;
+        }
     }
 }
 
@@ -251,3 +254,13 @@ body {
 }
 
 /** End AboutUs **/
+
+/** Modal **/
+
+.modal-body {
+    .btn {
+        margin: 0 0 0 15px;
+    }
+}
+
+/** End Modal **/

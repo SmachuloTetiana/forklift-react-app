@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { myFirebase } from '../../firebase';
+import { ModalForm } from './Modal';
 
 const List = (props) => {
     const [data, setData] = useState({
@@ -38,7 +39,9 @@ const List = (props) => {
         chooseValue: ''
     });
 
-    const [ value, setValue ] = useState();
+    const [ value, setValue ] = useState({
+        modalIsOpen: false
+    });
 
     const dataRef = myFirebase.database().ref('items');
 
@@ -87,7 +90,8 @@ const List = (props) => {
         event.preventDefault();
         setValue({
             ...value,
-            obj: {                
+            obj: {           
+                ...value.obj,     
                 [event.target.name]: event.target.value
             }
         })
@@ -95,12 +99,32 @@ const List = (props) => {
 
     const saveEditValue = () => {
         myFirebase.database().ref(`items/${value.id}`).update({
-            capacity: value.obj.capacity
-        });
+            model: value.obj.model,
+            capacity: value.obj.capacity,
+            power: value.obj.power,
+            transmision: value.obj.transmision,
+            lift_height: value.obj.lift_height,
+            free_lift: value.obj.free_lift,
+            tyres: value.obj.tyres,
+            fork: value.obj.fork,
+            description: value.obj.description
+        });     
+
+        setValue({
+            modalIsOpen: false
+        })
     }
 
     function editProduct(id, obj) {
-        setValue({id, obj})
+        setValue({
+            modalIsOpen: true,
+            id, 
+            obj
+        })
+    }
+
+    function closeModal() {
+        setValue({ modalIsOpen: false })
     }
 
     useEffect(() => {
@@ -339,18 +363,7 @@ const List = (props) => {
                     </form>
                 </div>
 
-                {value ? (
-                    <React.Fragment>
-                    { Object.keys(value.obj).map((item, i) => (
-                        <div key={i}>
-                            <input type="text" name={item} value={value.obj[item]} onChange={handleChangeValue} />
-                        </div>
-                    ))}
-                    
-                    <button type="submit" onClick={saveEditValue}>Save Changes</button>
-
-                    </React.Fragment>                 
-                ) : null}
+                {value.modalIsOpen ? <ModalForm value={value} close={closeModal} change={handleChangeValue} saveEdit={saveEditValue} /> : null}
 
                 <ul className="Product_list">
                     {data.products ? (
