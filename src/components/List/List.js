@@ -19,6 +19,7 @@ const List = (props) => {
         tyres: '',
         fork: '',
         description: '',
+        producer: ''
     });
 
     const [select, setSelect] = useState({
@@ -43,7 +44,7 @@ const List = (props) => {
         modalIsOpen: false
     });
 
-    const dataRef = myFirebase.database().ref('items');
+    const db = myFirebase.database();
 
     const handleChangeSelect = e => {
         e.preventDefault();
@@ -56,7 +57,7 @@ const List = (props) => {
     const handleAddForklift = event => {
         event.preventDefault();
         try {
-            dataRef.push({
+            db.ref('forklift').push({
                 model: product.model,
                 capacity: product.capacity,
                 power: product.power,
@@ -74,6 +75,33 @@ const List = (props) => {
         }
     }
 
+    const handleAddSparePart = event => {
+        event.preventDefault();
+        try {
+            db.ref('spare_part').push({
+                model: product.model,
+                producer: product.producer,
+                description: product.description
+            })
+
+        } catch (e) {
+            console.log(e.message)
+        }
+    }
+
+    const getProduct = async () => {
+        const items = await db.ref('items');
+        const forklift = await db.ref('forklift');
+
+        items.on('value', items => {
+            forklift.once('value', forklift => {
+                setData({
+                    products: {...items.val(), ...forklift.val()}
+                })
+            })
+        })
+    };
+
     const handleChangeInput = event => {
         event.preventDefault();
         setProduct({
@@ -83,7 +111,7 @@ const List = (props) => {
     }
 
     function deleteProduct(id) {
-        myFirebase.database().ref(`items/${id}`).remove();
+        db.ref(`items/${id}`).remove();
     }
 
     const handleChangeValue = event => {
@@ -98,7 +126,7 @@ const List = (props) => {
     }
 
     const saveEditValue = () => {
-        myFirebase.database().ref(`items/${value.id}`).update({
+        db.ref(`items/${value.id}`).update({
             model: value.obj.model,
             capacity: value.obj.capacity,
             power: value.obj.power,
@@ -135,7 +163,7 @@ const List = (props) => {
                     isFetching: true
                 })
 
-                dataRef.on('value', snapshot => {
+                db.ref('items').on('value', snapshot => {
                     setData({
                         products: snapshot.val(),
                         isFetching: false
@@ -159,7 +187,7 @@ const List = (props) => {
                 products: Object.values(data.products).filter(key => key.power && key.power.toLowerCase().search(newFilter.toLowerCase()) !== -1)
             })
         } else {
-            dataRef.on('value', snapshot => {
+            db.ref('items').on('value', snapshot => {
                 setData({
                     products: snapshot.val()
                 })
@@ -307,7 +335,7 @@ const List = (props) => {
                     </div>
 
                     <div className={`${select.chooseValue === 'spare_parts' ? 'd-block' : 'd-none'}`}>
-                        <form>
+                        <form onSubmit={handleAddSparePart}>
                             <div className="form-row">
                                 <div className="form-group col-md-6">
                                     <label htmlFor="model">Model:</label>
@@ -315,6 +343,8 @@ const List = (props) => {
                                         type="text"
                                         name="model"
                                         required
+                                        value={product.model}
+                                        onChange={handleChangeInput}
                                         placeholder="Model"
                                         className="form-control" />
                                 </div>
@@ -324,6 +354,8 @@ const List = (props) => {
                                     <input 
                                         type="text"
                                         name="producer"
+                                        value={product.producer}
+                                        onChange={handleChangeInput}
                                         placeholder="Producer"
                                         className="form-control"/>
                                 </div>
@@ -334,6 +366,8 @@ const List = (props) => {
                                 <textarea 
                                     type="text"
                                     name="description"
+                                    value={product.description}
+                                    onChange={handleChangeInput}
                                     placeholder="Detail information"
                                     className="form-control">
                                 </textarea>
@@ -411,7 +445,8 @@ const List = (props) => {
 }
 
 const mapStateToProps = state => ({
-    currentUser: state.auth.currentUser
+    currentUser: state.auth.currentUser,
+    item: state.forklift.item
 });
 
 export default connect(mapStateToProps)(List);
