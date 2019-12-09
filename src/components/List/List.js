@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { database } from '../../firebase';
 
-const List = (props) => {
+const List = ({currentUser}) => {
     const [data, setData] = useState({
         products: {},
         isFetching: false
@@ -118,10 +118,10 @@ const List = (props) => {
         <div className="container">
             <div className="Items-list">
 
-                {props.currentUser ? (
+                {currentUser ? (
                 
                 <div>
-                    <h4>You are logged in as {props.currentUser.email}. Now you can add some products of this list!</h4>
+                    <h4>You are logged in as {currentUser.email}. Now you can add some products of this list!</h4>
 
                     <div className="form-group">
                         <label className="col-form-label">Choose type of product:</label>
@@ -333,7 +333,7 @@ const List = (props) => {
                                         {value[key].description ? <p><strong>Detail information: </strong> {value[key].description}</p> : ''}
                                     </div>
 
-                                    {props.currentUser ? (
+                                    {currentUser ? (
                                         <div className="d-flex flex-row btn-container">
                                             <button 
                                                 type="button" 
