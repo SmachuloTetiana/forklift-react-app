@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { myFirebase } from '../../firebase';
 import { setCurrentUser } from '../../actions';
+import { authRef } from '../../firebase';
 
 export const AuthProvider = ({ children }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    myFirebase.auth().onAuthStateChanged(user => {
+    authRef.onAuthStateChanged(user => {
         dispatch(setCurrentUser(user))
     });
   }, [dispatch]);

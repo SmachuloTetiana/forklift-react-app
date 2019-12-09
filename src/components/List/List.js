@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { myFirebase } from '../../firebase';
-import { ModalForm } from './Modal';
+import { database } from '../../firebase';
 
 const List = (props) => {
     const [data, setData] = useState({
@@ -40,12 +39,6 @@ const List = (props) => {
         chooseValue: ''
     });
 
-    const [ value, setValue ] = useState({
-        modalIsOpen: false
-    });
-
-    const db = myFirebase.database();
-
     const handleChangeSelect = e => {
         e.preventDefault();
         setSelect({
@@ -56,29 +49,23 @@ const List = (props) => {
 
     const handleAddForklift = event => {
         event.preventDefault();
-        try {
-            db.ref('forklift').push({
-                model: product.model,
-                capacity: product.capacity,
-                power: product.power,
-                transmision: product.transmision,
-                lift_height: product.lift_height,
-                free_lift: product.free_lift,
-                tyres: product.tyres,
-                fork: product.fork,
-                description: product.description,
-            });
-            console.log('add product successful')
-        }
-        catch (e) {
-            console.log(e.message)
-        }
+        database.ref('forklift').push({
+            model: product.model,
+            capacity: product.capacity,
+            power: product.power,
+            transmision: product.transmision,
+            lift_height: product.lift_height,
+            free_lift: product.free_lift,
+            tyres: product.tyres,
+            fork: product.fork,
+            description: product.description
+        });
     }
 
     const handleAddSparePart = event => {
         event.preventDefault();
         try {
-            db.ref('spare_part').push({
+            database.ref('spare_part').push({
                 model: product.model,
                 producer: product.producer,
                 description: product.description
@@ -89,70 +76,12 @@ const List = (props) => {
         }
     }
 
-    const getProduct = async () => {
-        const items = await db.ref('items');
-        const forklift = await db.ref('forklift');
-
-        items.on('value', items => {
-            forklift.once('value', forklift => {
-                setData({
-                    products: {...items.val(), ...forklift.val()}
-                })
-            })
-        })
-    };
-
     const handleChangeInput = event => {
         event.preventDefault();
         setProduct({
             ...product,
             [event.target.name]: event.target.value
         })
-    }
-
-    function deleteProduct(id) {
-        db.ref(`items/${id}`).remove();
-    }
-
-    const handleChangeValue = event => {
-        event.preventDefault();
-        setValue({
-            ...value,
-            obj: {           
-                ...value.obj,     
-                [event.target.name]: event.target.value
-            }
-        })
-    }
-
-    const saveEditValue = () => {
-        db.ref(`items/${value.id}`).update({
-            model: value.obj.model,
-            capacity: value.obj.capacity,
-            power: value.obj.power,
-            transmision: value.obj.transmision,
-            lift_height: value.obj.lift_height,
-            free_lift: value.obj.free_lift,
-            tyres: value.obj.tyres,
-            fork: value.obj.fork,
-            description: value.obj.description
-        });     
-
-        setValue({
-            modalIsOpen: false
-        })
-    }
-
-    function editProduct(id, obj) {
-        setValue({
-            modalIsOpen: true,
-            id, 
-            obj
-        })
-    }
-
-    function closeModal() {
-        setValue({ modalIsOpen: false })
     }
 
     useEffect(() => {
@@ -163,7 +92,7 @@ const List = (props) => {
                     isFetching: true
                 })
 
-                db.ref('items').on('value', snapshot => {
+                database.ref('/').on('value', snapshot => {                 
                     setData({
                         products: snapshot.val(),
                         isFetching: false
@@ -180,19 +109,9 @@ const List = (props) => {
         }
         fetchUsers();
     }, []);
-
-    const filterList = newFilter => {
-        if(newFilter) {
-            setData({
-                products: Object.values(data.products).filter(key => key.power && key.power.toLowerCase().search(newFilter.toLowerCase()) !== -1)
-            })
-        } else {
-            db.ref('items').on('value', snapshot => {
-                setData({
-                    products: snapshot.val()
-                })
-            })
-        }
+    
+    const deleteItem = (child, id) => {
+        database.ref(`${child}/${id}`).remove();
     }
 
     return (
@@ -393,50 +312,46 @@ const List = (props) => {
 
                 <div className="toolbar">
                     <form>
-                        <input type="text" placeholder="Filter by type" className="form-control" onChange={e => filterList(e.target.value)}/>
+                        <input type="text" placeholder="Filter by type" className="form-control"/>
                     </form>
                 </div>
 
-                {value.modalIsOpen ? <ModalForm value={value} close={closeModal} change={handleChangeValue} saveEdit={saveEditValue} /> : null}
-
                 <ul className="Product_list">
-                    {data.products ? (
-                        Object.keys(data.products).map((key) => {
-                            return (
+                    {
+                        Object.entries(data.products).map(([child, value]) => (                            
+                            Object.keys(value).map(key => (
                                 <li key={key} className="d-flex flex-row align-items-center justify-content-between"> 
                                     <div className="Product_list__information">
-                                        <span>{data.products[key].title || data.products[key].model}</span>
-                                        {data.products[key].capacity ? <p><strong>Capacity, kg:</strong> {data.products[key].capacity}</p> : ''}
-                                        {data.products[key].power ? <p><strong>Power type:</strong> {data.products[key].power}</p> : ''}
-                                        {data.products[key].transmision ? <p><strong>Type of transmision:</strong> {data.products[key].transmision}</p> : ''}
-                                        {data.products[key].lift_height ? <p><strong>Lift height, mm:</strong> {data.products[key].lift_height}</p> : ''}
-                                        {data.products[key].free_lift ? <p><strong>Free lift (+/-), mm:</strong> {data.products[key].free_lift}</p> : ''}
-                                        {data.products[key].tyres ? <p><strong>Tyres type:</strong> {data.products[key].tyres}</p> : ''}
-                                        {data.products[key].fork ? <p><strong>Fork, mm:</strong> {data.products[key].fork}</p> : ''}
-                                        {data.products[key].description ? <p><strong>Detail information: </strong> {data.products[key].description}</p> : ''}
+                                        <span>{value[key].title || value[key].model}</span>
+                                        {value[key].capacity ? <p><strong>Capacity, kg:</strong> {value[key].capacity}</p> : ''}
+                                        {value[key].power ? <p><strong>Power type:</strong> {value[key].power}</p> : ''}
+                                        {value[key].transmision ? <p><strong>Type of transmision:</strong> {value[key].transmision}</p> : ''}
+                                        {value[key].lift_height ? <p><strong>Lift height, mm:</strong> {value[key].lift_height}</p> : ''}
+                                        {value[key].free_lift ? <p><strong>Free lift (+/-), mm:</strong> {value[key].free_lift}</p> : ''}
+                                        {value[key].tyres ? <p><strong>Tyres type:</strong> {value[key].tyres}</p> : ''}
+                                        {value[key].fork ? <p><strong>Fork, mm:</strong> {value[key].fork}</p> : ''}
+                                        {value[key].description ? <p><strong>Detail information: </strong> {value[key].description}</p> : ''}
                                     </div>
 
                                     {props.currentUser ? (
                                         <div className="d-flex flex-row btn-container">
                                             <button 
                                                 type="button" 
-                                                className="btn btn-primary"
-                                                onClick={() => editProduct(key, data.products[key])}>
+                                                className="btn btn-primary">
                                                     Edit
                                             </button>
 
                                             <button 
                                                 type="button" 
                                                 className="btn btn-primary delete-btn"
-                                                onClick={() => deleteProduct(key)}>
+                                                onClick={() => deleteItem(child, key)}>
                                                     Delete
                                             </button>
                                         </div>
                                     ) : null}
                                 </li>
-                            )
-                        })
-                    ) : null
+                            ))
+                        ))
                     }
                 </ul>
             </div>

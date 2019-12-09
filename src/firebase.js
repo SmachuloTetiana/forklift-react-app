@@ -1,15 +1,16 @@
-import * as firebase from "firebase/app";
-import "firebase/auth";
-import "firebase/database";
+import * as firebase from 'firebase';
 
-const firebaseConfig = {
-    apiKey: "AIzaSyBU-uaHiX-z-dUGe1ffkG30ljcJ-A4Re70",
-    authDomain: "forklift-bb1ea.firebaseapp.com",
-    databaseURL: "https://forklift-bb1ea.firebaseio.com",
-    projectId: "forklift-bb1ea",
-    storageBucket: "forklift-bb1ea.appspot.com",
-    messagingSenderId: "1079247100131",
-    appId: "1:1079247100131:web:0372e0741033be717b4dd6"
+const config = {
+    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+    authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+    databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
+    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID
 }
 
-export const myFirebase = firebase.initializeApp(firebaseConfig );
+firebase.initializeApp(config);
+
+export const database = firebase.database();
+
+export const authRef = firebase.auth();

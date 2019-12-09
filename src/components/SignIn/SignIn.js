@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
-import { myFirebase } from '../../firebase';
 import { setCurrentUser } from '../../actions';
 import { Redirect } from 'react-router-dom';
+import { authRef } from '../../firebase';
 
 
 const SignIn = () => {
@@ -15,7 +15,7 @@ const SignIn = () => {
     const handleSignIn = async event => {
         event.preventDefault();
         try {
-            const user = await myFirebase.auth().signInWithEmailAndPassword(email, password);
+            const user = await authRef.signInWithEmailAndPassword(email, password);
             dispatch(setCurrentUser(user));
             setRedirect({
                 redirect: true

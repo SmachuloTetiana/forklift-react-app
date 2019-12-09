@@ -2,18 +2,15 @@ import React from 'react';
 import logo from '../../images/logo.gif';
 import { NavLink } from 'react-router-dom';
 import { connect, useDispatch } from 'react-redux';
-import { myFirebase } from '../../firebase';
 import { setCurrentUser } from '../../actions';
+import { authRef } from '../../firebase';
 
 const Navbar = ({ currentUser }) => {
     const dispatch = useDispatch();
     const handleSignOut = () => {
-        myFirebase
-            .auth()
-            .signOut()
-            .then(() => {
-                dispatch(setCurrentUser(null))
-            })
+        authRef.signOut().then(() => {
+            dispatch(setCurrentUser(null))
+        })
     }
 
     return (

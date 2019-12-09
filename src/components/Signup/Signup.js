@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
-import { myFirebase } from '../../firebase';
 import { setRegisterUser } from '../../actions';
+import { authRef } from '../../firebase';
 
 const Signup = () => {
     const dispatch = useDispatch();
@@ -57,7 +57,7 @@ const Signup = () => {
         try {
             if(handleValidation()){
                 const {email, password} = user;
-                const response = myFirebase.auth().createUserWithEmailAndPassword(email, password);
+                const response = authRef.createUserWithEmailAndPassword(email, password);
                 
                 dispatch(setRegisterUser(response));
                 console.log('validation successful')   
