@@ -1,15 +1,14 @@
 import React from 'react';
 import logo from '../../images/logo.gif';
 import { NavLink } from 'react-router-dom';
-import { connect, useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { setCurrentUser } from '../../actions';
 import { authRef } from '../../firebase';
 
-const Navbar = ({ currentUser }) => {
-    const dispatch = useDispatch();
+const Navbar = props => {
     const handleSignOut = () => {
         authRef.signOut().then(() => {
-            dispatch(setCurrentUser(null))
+            setCurrentUser(null)
         })
     }
 
@@ -33,7 +32,7 @@ const Navbar = ({ currentUser }) => {
                         <NavLink activeClassName="active" className="nav-link" exact to='/list'>List</NavLink>
                     </li>
                     {
-                        !currentUser ? (
+                        !props.currentUser ? (
                             <React.Fragment>                      
                                 <li className="nav-item">
                                     <NavLink activeClassName="active" className="nav-link" to="/sign-in">Sign In</NavLink>
@@ -57,4 +56,8 @@ const mapStateToProps = state => ({
     currentUser: state.auth.currentUser
 });
 
-export default connect(mapStateToProps)(Navbar);
+const mapDispatchToProps = dispatch => ({
+    setCurrentUser: () => dispatch(setCurrentUser())
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Navbar);
