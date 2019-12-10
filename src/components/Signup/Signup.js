@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { setRegisterUser } from '../../actions';
 import { authRef } from '../../firebase';
 
 const Signup = () => {
-    const dispatch = useDispatch();
     const [user, setUser] = useState({
         name: '',
         email: '',
@@ -59,7 +58,7 @@ const Signup = () => {
                 const {email, password} = user;
                 const response = authRef.createUserWithEmailAndPassword(email, password);
                 
-                dispatch(setRegisterUser(response));
+                setRegisterUser(response);
                 console.log('validation successful')   
             }        
 
@@ -144,4 +143,8 @@ const mapStateToProps = state => ({
     registerUser: state.auth.registerUser
 })
 
-export default connect(mapStateToProps)(Signup);
+const mapDispatchToProps = dispatch => ({
+    setRegisterUser: () => dispatch(setRegisterUser())
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Signup);

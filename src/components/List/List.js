@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { database } from '../../firebase';
+import { setItems } from '../../actions';
 
-const List = (props) => {
-    const [data, setData] = useState({
-        products: {},
-        isFetching: false
-    });
-
+const List = ({ currentUser, items, setItems }) => {
     const [product, setProduct] = useState({
         model: '',
         capacity: '',
@@ -39,11 +35,11 @@ const List = (props) => {
         chooseValue: ''
     });
 
-    const handleChangeSelect = e => {
-        e.preventDefault();
+    const handleChangeSelect = event => {
+        event.preventDefault();
         setSelect({
             ...select,
-            chooseValue: e.target.value
+            chooseValue: event.target.value
         })
     }
 
@@ -85,43 +81,28 @@ const List = (props) => {
     }
 
     useEffect(() => {
-        const fetchUsers = () => {
-            try {
-                setData({
-                    products: data.products,
-                    isFetching: true
-                })
-
-                database.ref('/').on('value', snapshot => {                 
-                    setData({
-                        products: snapshot.val(),
-                        isFetching: false
-                    })
-                })
-            }
-            catch (e) {
-                console.log(e);
-                setData({
-                    products: data.products,
-                    isFetching: false
-                })
-            }
-        }
-        fetchUsers();
+        database.ref('/').on('value', snapshot => {                 
+            setItems(snapshot.val())
+        })
     }, []);
     
     const deleteItem = (child, id) => {
         database.ref(`${child}/${id}`).remove();
     }
 
+    const editItem = value => {
+        console.log(value);
+        
+    }
+
     return (
         <div className="container">
             <div className="Items-list">
 
-                {props.currentUser ? (
+                {currentUser ? (
                 
                 <div>
-                    <h4>You are logged in as {props.currentUser.email}. Now you can add some products of this list!</h4>
+                    <h4>You are logged in as {currentUser.email}. Now you can add some products of this list!</h4>
 
                     <div className="form-group">
                         <label className="col-form-label">Choose type of product:</label>
@@ -317,8 +298,8 @@ const List = (props) => {
                 </div>
 
                 <ul className="Product_list">
-                    {
-                        Object.entries(data.products).map(([child, value]) => (                            
+                    {items ?
+                        Object.entries(items).map(([child, value]) => (                            
                             Object.keys(value).map(key => (
                                 <li key={key} className="d-flex flex-row align-items-center justify-content-between"> 
                                     <div className="Product_list__information">
@@ -333,11 +314,12 @@ const List = (props) => {
                                         {value[key].description ? <p><strong>Detail information: </strong> {value[key].description}</p> : ''}
                                     </div>
 
-                                    {props.currentUser ? (
+                                    {currentUser ? (
                                         <div className="d-flex flex-row btn-container">
                                             <button 
                                                 type="button" 
-                                                className="btn btn-primary">
+                                                className="btn btn-primary"
+                                                onClick={() => editItem(value[key])}>
                                                     Edit
                                             </button>
 
@@ -351,7 +333,7 @@ const List = (props) => {
                                     ) : null}
                                 </li>
                             ))
-                        ))
+                        )) : null
                     }
                 </ul>
             </div>
@@ -361,7 +343,11 @@ const List = (props) => {
 
 const mapStateToProps = state => ({
     currentUser: state.auth.currentUser,
-    item: state.forklift.item
+    items: state.products.items
 });
 
-export default connect(mapStateToProps)(List);
+const mapDispatchToProps = dispatch => ({
+    setItems: (items) => dispatch(setItems(items))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(List);

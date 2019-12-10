@@ -12,9 +12,9 @@ export const setRegisterUser = resp => {
     }
 }
 
-export const getForklift = forklift => {
+export const setItems = response => {
     return {
-        type: 'FORKLIFTS',
-        payload: forklift
+        type: 'PRODUCTS',
+        payload: response
     }
 }

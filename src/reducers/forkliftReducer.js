@@ -1,17 +1,17 @@
 const initialState = {
-    item: null
+    items: null
 }
 
-const forkliftReducer = (state = initialState, action) => {
+const productReducer = (state = initialState, action) => {
     switch(action.type) {
-        case 'FORKLIFTS':
+        case 'PRODUCTS':
             return {
                 ...state,
-                item: action.payload
+                items: action.payload
             }
         default:
             return state;
     }
 }
 
-export default forkliftReducer;
+export default productReducer;
