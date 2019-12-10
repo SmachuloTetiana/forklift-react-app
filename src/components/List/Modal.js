@@ -1,9 +1,10 @@
 import React from 'react';
 import Modal from 'react-modal';
 
-export const ModalForm = (props) => {    
+export const ModalForm = props => {   
+    console.log(props) 
     return (
-        <Modal isOpen={props.value.modalIsOpen} ariaHideApp={false} className="modal-dialog modal-lg">
+        <Modal isOpen={true} ariaHideApp={false} className="modal-dialog modal-lg">
             <div className="modal-content">
                 <div className="modal-header">
                     <h4 className="modal-title">Edit Form</h4>
