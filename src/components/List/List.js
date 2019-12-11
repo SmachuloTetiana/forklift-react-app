@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { database } from '../../firebase';
 import { setItems } from '../../actions';
+import { ModalForm } from './Modal';
 
 const List = ({ currentUser, items, setItems }) => {
     const [product, setProduct] = useState({
@@ -56,6 +57,7 @@ const List = ({ currentUser, items, setItems }) => {
             fork: product.fork,
             description: product.description
         });
+        resetFormFields();
     }
 
     const handleAddSparePart = event => {
@@ -66,7 +68,7 @@ const List = ({ currentUser, items, setItems }) => {
                 producer: product.producer,
                 description: product.description
             })
-
+            resetFormFields();
         } catch (e) {
             console.log(e.message)
         }
@@ -80,6 +82,21 @@ const List = ({ currentUser, items, setItems }) => {
         })
     }
 
+    const resetFormFields = () => {
+        setProduct({
+            model: '',
+            capacity: '',
+            power: '',
+            transmision: '',
+            lift_height: '',
+            free_lift: '',
+            tyres: '',
+            fork: '',
+            description: '',
+            producer: ''
+        })
+    }
+
     useEffect(() => {
         database.ref('/').on('value', snapshot => {                 
             setItems(snapshot.val())
@@ -90,9 +107,44 @@ const List = ({ currentUser, items, setItems }) => {
         database.ref(`${child}/${id}`).remove();
     }
 
-    const editItem = value => {
-        console.log(value);
-        
+    const [modal, setModal] = useState({
+        modalIsOpen: false,
+        data: {}
+    });
+
+    const handleChangeModalValue = event => {
+        event.preventDefault();
+        setModal({
+            ...modal,
+            data: {
+                ...modal.data,
+                [event.target.name]: event.target.value
+            }
+        })
+    }
+
+    const editItem = (db, id, value) => {
+        setModal({
+            modalIsOpen: true,
+            dbName: db,
+            dbId: id,
+            data: value
+        });
+    }
+
+    const saveModalValue = event => {
+        event.preventDefault();
+        database.ref(`${modal.dbName}/${modal.dbId}`).update(modal.data);
+        closeModal();
+    }
+
+    function closeModal() {
+        setModal({
+            modalIsOpen: false
+        })
+    }
+
+    const filterItems = event => {
     }
 
     return (
@@ -293,9 +345,13 @@ const List = ({ currentUser, items, setItems }) => {
 
                 <div className="toolbar">
                     <form>
-                        <input type="text" placeholder="Filter by type" className="form-control"/>
+                        <input type="text" placeholder="Filter by type" className="form-control" onChange={(e) => filterItems(e.target.value)}/>
                     </form>
                 </div>
+
+                {
+                    modal.modalIsOpen ? <ModalForm valueModal={modal} close={closeModal} save={saveModalValue} change={handleChangeModalValue} /> : null
+                }
 
                 <ul className="Product_list">
                     {items ?
@@ -319,7 +375,7 @@ const List = ({ currentUser, items, setItems }) => {
                                             <button 
                                                 type="button" 
                                                 className="btn btn-primary"
-                                                onClick={() => editItem(value[key])}>
+                                                onClick={() => editItem(child, key, value[key])}>
                                                     Edit
                                             </button>
 
