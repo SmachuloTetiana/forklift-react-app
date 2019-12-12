@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { setCurrentUser } from '../../actions';
+import { setCurrentUser } from 'store/actions';
 import { authRef } from '../../firebase';
 
 export const AuthProvider = ({ children }) => {

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { database } from '../../firebase';
-import { setItems } from '../../actions';
+import { setItems } from 'store/actions';
 import { ModalForm } from './Modal';
+import { database } from '../../firebase';
 
 const List = ({ currentUser, items, setItems }) => {
     const [product, setProduct] = useState({
