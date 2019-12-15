@@ -68,6 +68,7 @@ const List = ({ currentUser, items, setItems }) => {
             })
             resetFormFields();
         } catch (e) {
+            // TODO: it would be great if in case of error there will be some notification for user
             console.log(e.message)
         }
     }

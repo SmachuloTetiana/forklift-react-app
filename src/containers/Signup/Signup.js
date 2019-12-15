@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { authRef } from 'firebase';
 
 const Signup = props => {
+    const emailPattern = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
+    
     const [user, setUser] = useState({
         name: '',
         email: '',
@@ -27,7 +29,8 @@ const Signup = props => {
             formIsValid = false;
             error['name'] = "Name field cannot be empty and must at least 3 characters";
         }
-        if(!/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email)) {
+        
+        if(!emailPattern.test(email)) {
             formIsValid = false;
             error['email'] = "Please provide a valid email address";
         }
