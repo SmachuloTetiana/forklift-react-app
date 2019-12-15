@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
-import { setCurrentUser } from 'store/actions';
 import { Redirect } from 'react-router-dom';
-import { authRef } from 'firebase';
+import { authRef } from '../../firebase';
 
-
-const SignIn = (props) => {
+const SignIn = props => {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [redirect, setRedirect] = useState();
@@ -81,12 +78,4 @@ const SignIn = (props) => {
     )
 }
 
-const mapStateToProps = state => ({
-    currentUser: state.auth.currentUser
-});
-
-const mapDispatchToProps = dispatch => ({
-    setCurrentUser: (currentUser) => dispatch(setCurrentUser(currentUser))
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(SignIn);
+export default SignIn;

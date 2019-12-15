@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
 import { authRef } from 'firebase';
-import { setRegisterUser } from 'store/actions';
 
-const Signup = (props) => {
+const Signup = props => {
     const [user, setUser] = useState({
         name: '',
         email: '',
@@ -137,12 +135,4 @@ const Signup = (props) => {
     )
 }
 
-const mapStateToProps = state => ({
-    registerUser: state.auth.registerUser
-})
-
-const mapDispatchToProps = dispatch => ({
-    setRegisterUser: (registerUser) => dispatch(setRegisterUser(registerUser))
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Signup);
+export default Signup;

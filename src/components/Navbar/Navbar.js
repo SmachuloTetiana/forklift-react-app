@@ -3,12 +3,12 @@ import logo from 'images/logo.gif';
 import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { setCurrentUser } from 'store/actions';
-import { authRef } from 'firebase';
+import { authRef } from '../../firebase';
 
 const Navbar = props => {
     const handleSignOut = () => {
         authRef.signOut().then(() => {
-            setCurrentUser(null)
+            props.setCurrentUser(null)
         })
     }
 

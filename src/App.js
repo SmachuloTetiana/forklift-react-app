@@ -3,11 +3,12 @@ import { Route, Switch } from 'react-router-dom';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import SignIn from 'components/SignIn/SignIn';
-import Home from 'components/Home/Home';
+import SignIn from 'containers/SignIn';
+import Home from 'containers/Home/Home';
+import List from 'containers/List';
+import Signup from 'containers/Signup';
+
 import Navbar from 'components/Navbar/Navbar';
-import List from 'components/List/List';
-import Signup from 'components/Signup/Signup';
 import { AuthProvider } from 'components/Auth/Auth';
 
 function App() {

@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
-import { setItems } from 'store/actions';
-import { ModalForm } from './Modal';
+import { ModalForm } from '../../components/List/Modal';
 import { database } from '../../firebase';
 
 const List = ({ currentUser, items, setItems }) => {
@@ -397,13 +395,4 @@ const List = ({ currentUser, items, setItems }) => {
     )
 }
 
-const mapStateToProps = state => ({
-    currentUser: state.auth.currentUser,
-    items: state.products.items
-});
-
-const mapDispatchToProps = dispatch => ({
-    setItems: (items) => dispatch(setItems(items))
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(List);
+export default List;
