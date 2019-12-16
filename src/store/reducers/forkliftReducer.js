@@ -1,10 +1,12 @@
+import { PRODUCTS } from "store/constants/actionTypes";
+
 const initialState = {
     items: null
 }
 
 const productReducer = (state = initialState, action) => {
     switch(action.type) {
-        case 'PRODUCTS':
+        case PRODUCTS:
             return {
                 ...state,
                 items: action.payload

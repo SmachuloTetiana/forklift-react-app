@@ -144,6 +144,11 @@ const List = ({ currentUser, items, setItems }) => {
     }
 
     const filterItems = event => {
+        Object.keys(items).map(dbKey => (
+            Object.keys(items[dbKey]).map(data => (
+                Object.values(items[dbKey][data]).filter(i => i.toLowerCase().search(event.toLowerCase()) !== -1)                
+            ))
+        ))
     }
 
     return (
@@ -344,7 +349,11 @@ const List = ({ currentUser, items, setItems }) => {
 
                 <div className="toolbar">
                     <form>
-                        <input type="text" placeholder="Filter by type" className="form-control" onChange={(e) => filterItems(e.target.value)}/>
+                        <input 
+                            type="text" 
+                            placeholder="Search" 
+                            className="form-control" 
+                            onChange={(e) => filterItems(e.target.value)}/>
                     </form>
                 </div>
 
@@ -366,6 +375,7 @@ const List = ({ currentUser, items, setItems }) => {
                                         {value[key].free_lift ? <p><strong>Free lift (+/-), mm:</strong> {value[key].free_lift}</p> : ''}
                                         {value[key].tyres ? <p><strong>Tyres type:</strong> {value[key].tyres}</p> : ''}
                                         {value[key].fork ? <p><strong>Fork, mm:</strong> {value[key].fork}</p> : ''}
+                                        {value[key].producer ? <p><strong>Producer:</strong> {value[key].producer}</p> : ''}
                                         {value[key].description ? <p><strong>Detail information: </strong> {value[key].description}</p> : ''}
                                     </div>
 

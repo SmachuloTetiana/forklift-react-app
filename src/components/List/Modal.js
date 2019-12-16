@@ -13,15 +13,27 @@ export const ModalForm = props => {
             <div className="modal-content">
                 <div className="modal-header">
                     <h4 className="modal-title">Edit Form</h4>
-                    <button type="button" className="close" onClick={props.close}>&times;</button>
+                    <button 
+                        type="button" 
+                        className="close" 
+                        onClick={props.close}>
+                            &times;
+                    </button>
                 </div>
 
                 <form className="modal-body">
                     <div className="d-flex flex-row flex-wrap">
                     { Object.keys(data).map((item, index) => (
                         <div key={index} className="col-sm-6">
-                            <label className="col-form-label">{modifyObjectKeyToString(item)}</label>
-                            <input type="text" className="form-control" name={item} value={data[item]} onChange={props.change} />
+                            <label className="col-form-label">
+                                {modifyObjectKeyToString(item)}
+                            </label>
+                            <input 
+                                type="text" 
+                                className="form-control" 
+                                name={item} 
+                                value={data[item]} 
+                                onChange={props.change} />
                         </div>
                     ))}   
                     </div>     
