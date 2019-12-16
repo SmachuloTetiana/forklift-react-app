@@ -4,6 +4,10 @@ import Modal from 'react-modal';
 export const ModalForm = props => {
     const {modalIsOpen, data} = props.valueModal;
 
+    const modifyObjectKeyToString = key => {
+        return (key.charAt(0).toUpperCase() + key.slice(1)).split('_').join(' '); 
+    }
+
     return (
         <Modal isOpen={modalIsOpen} ariaHideApp={false} className="modal-dialog modal-lg">
             <div className="modal-content">
@@ -16,8 +20,7 @@ export const ModalForm = props => {
                     <div className="d-flex flex-row flex-wrap">
                     { Object.keys(data).map((item, index) => (
                         <div key={index} className="col-sm-6">
-                            {/* TODO: move logic to separate method, complex logic should not be in the view */}
-                            <label className="col-form-label">{(item.charAt(0).toUpperCase() + item.slice(1)).split('_').join(' ')}</label>
+                            <label className="col-form-label">{modifyObjectKeyToString(item)}</label>
                             <input type="text" className="form-control" name={item} value={data[item]} onChange={props.change} />
                         </div>
                     ))}   
