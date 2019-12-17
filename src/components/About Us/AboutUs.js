@@ -1,5 +1,5 @@
 import React from 'react';
-import mikro_f_office from '../../images/main_office_of_mikro_f.jpg';
+import mikro_f_office from 'images/main_office_of_mikro_f.jpg';
 
 const AboutUs = () => {
     return (

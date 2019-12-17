@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ModalForm } from '../../components/List/Modal';
+import { ModalForm } from 'components/List/Modal';
 import { database } from '../../firebase';
 
 const List = ({ currentUser, items, setItems }) => {
@@ -144,11 +144,18 @@ const List = ({ currentUser, items, setItems }) => {
     }
 
     const filterItems = event => {
-        Object.keys(items).map(dbKey => (
-            Object.keys(items[dbKey]).map(data => (
-                Object.values(items[dbKey][data]).filter(i => i.toLowerCase().search(event.toLowerCase()) !== -1)                
-            ))
-        ))
+        if(event) {
+            var filterObj = Object.keys(items).reduce((obj, key) => {
+                obj[key] = Object.values(items[key]).filter(el => el.power && el.power.toLowerCase().search(event.toLowerCase()) !== -1);
+                return obj;
+            }, {});
+    
+            setItems(filterObj)
+        } else {
+            database.ref('/').on('value', snapshot => {
+                setItems(snapshot.val())
+            })
+        }
     }
 
     return (
@@ -351,7 +358,7 @@ const List = ({ currentUser, items, setItems }) => {
                     <form>
                         <input 
                             type="text" 
-                            placeholder="Search" 
+                            placeholder="Search by power type diesel/electric..." 
                             className="form-control" 
                             onChange={(e) => filterItems(e.target.value)}/>
                     </form>
