@@ -1,14 +1,14 @@
 import React from 'react';
-import logo from '../../images/logo.gif';
+import logo from 'images/logo.gif';
 import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { setCurrentUser } from '../../actions';
+import { setCurrentUser } from 'store/actions';
 import { authRef } from '../../firebase';
 
 const Navbar = props => {
     const handleSignOut = () => {
         authRef.signOut().then(() => {
-            setCurrentUser(null)
+            props.setCurrentUser(null)
         })
     }
 
@@ -19,7 +19,11 @@ const Navbar = props => {
                 <span>Mikro-F</span>
             </a>
 
-            <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            <button 
+                className="navbar-toggler" 
+                type="button" 
+                data-toggle="collapse" 
+                data-target="#collapsibleNavbar">
                 <span className="navbar-toggler-icon"></span>
             </button>
 
@@ -43,7 +47,12 @@ const Navbar = props => {
                                 </li>
                             </React.Fragment>   
                         ) : (   
-                            <button type="button" className="btn btn-primary signOutBtn ml-auto" onClick={handleSignOut}>Sign Out</button>
+                            <button 
+                                type="button" 
+                                className="btn btn-primary signOutBtn ml-auto" 
+                                onClick={handleSignOut}>
+                                    Sign Out
+                            </button>
                         )
                     }  
                 </ul>

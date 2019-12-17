@@ -1,3 +1,5 @@
+import { LOGIN, SIGNUP } from "store/constants/actionTypes";
+
 const initialState = {
     currentUser: null,
     registerUser: null
@@ -5,12 +7,12 @@ const initialState = {
 
 const authReducer = (state = initialState, action) => {
     switch(action.type) {
-        case 'LOGIN':
+        case LOGIN:
             return {
                 ...state,
                 currentUser: action.payload
             }  
-        case 'SIGNUP':
+        case SIGNUP:
             return {
                 ...state,
                 registerUser: action.payload

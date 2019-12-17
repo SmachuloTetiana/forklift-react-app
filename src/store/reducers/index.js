@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
 import authReducer from './authReducer';
-import forkliftReducer from './forkliftReducer';
+import productReducer from './forkliftReducer';
 
 const allReducer = combineReducers({
     auth: authReducer,
-    forklift: forkliftReducer
+    products: productReducer
 })
 
 export default allReducer;

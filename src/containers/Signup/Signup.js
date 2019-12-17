@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { connect, useDispatch } from 'react-redux';
-import { setRegisterUser } from '../../actions';
-import { authRef } from '../../firebase';
+import { authRef } from 'firebase';
 
-const Signup = () => {
-    const dispatch = useDispatch();
+const Signup = props => {
+    const emailPattern = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
+    
     const [user, setUser] = useState({
         name: '',
         email: '',
@@ -30,7 +29,8 @@ const Signup = () => {
             formIsValid = false;
             error['name'] = "Name field cannot be empty and must at least 3 characters";
         }
-        if(!/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email)) {
+        
+        if(!emailPattern.test(email)) {
             formIsValid = false;
             error['email'] = "Please provide a valid email address";
         }
@@ -59,13 +59,11 @@ const Signup = () => {
                 const {email, password} = user;
                 const response = authRef.createUserWithEmailAndPassword(email, password);
                 
-                dispatch(setRegisterUser(response));
-                console.log('validation successful')   
-            }        
-
+                props.setRegisterUser(response);
+                props.history.push("/list")
+            }   
         } catch (e) {
             setUser({error: e.message})
-            console.log('validation failed')
         }
     }
 
@@ -140,8 +138,4 @@ const Signup = () => {
     )
 }
 
-const mapStateToProps = state => ({
-    registerUser: state.auth.registerUser
-})
-
-export default connect(mapStateToProps)(Signup);
+export default Signup;

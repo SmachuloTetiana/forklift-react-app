@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import { ModalForm } from 'components/List/Modal';
 import { database } from '../../firebase';
 
-const List = (props) => {
-    const [data, setData] = useState({
-        products: {},
-        isFetching: false
-    });
-
+const List = ({ currentUser, items, setItems }) => {
     const [product, setProduct] = useState({
         model: '',
         capacity: '',
@@ -39,11 +34,11 @@ const List = (props) => {
         chooseValue: ''
     });
 
-    const handleChangeSelect = e => {
-        e.preventDefault();
+    const handleChangeSelect = event => {
+        event.preventDefault();
         setSelect({
             ...select,
-            chooseValue: e.target.value
+            chooseValue: event.target.value
         })
     }
 
@@ -60,6 +55,7 @@ const List = (props) => {
             fork: product.fork,
             description: product.description
         });
+        resetFormFields();
     }
 
     const handleAddSparePart = event => {
@@ -70,8 +66,9 @@ const List = (props) => {
                 producer: product.producer,
                 description: product.description
             })
-
+            resetFormFields();
         } catch (e) {
+            // TODO: it would be great if in case of error there will be some notification for user
             console.log(e.message)
         }
     }
@@ -84,44 +81,91 @@ const List = (props) => {
         })
     }
 
-    useEffect(() => {
-        const fetchUsers = () => {
-            try {
-                setData({
-                    products: data.products,
-                    isFetching: true
-                })
+    const resetFormFields = () => {
+        setProduct({
+            model: '',
+            capacity: '',
+            power: '',
+            transmision: '',
+            lift_height: '',
+            free_lift: '',
+            tyres: '',
+            fork: '',
+            description: '',
+            producer: ''
+        })
+    }
 
-                database.ref('/').on('value', snapshot => {                 
-                    setData({
-                        products: snapshot.val(),
-                        isFetching: false
-                    })
-                })
-            }
-            catch (e) {
-                console.log(e);
-                setData({
-                    products: data.products,
-                    isFetching: false
-                })
-            }
-        }
-        fetchUsers();
+    useEffect(() => {
+        database.ref('/').on('value', snapshot => {                 
+            setItems(snapshot.val())
+        })
     }, []);
     
     const deleteItem = (child, id) => {
         database.ref(`${child}/${id}`).remove();
     }
 
+    const [modal, setModal] = useState({
+        modalIsOpen: false,
+        data: {}
+    });
+
+    const handleChangeModalValue = event => {
+        event.preventDefault();
+        setModal({
+            ...modal,
+            data: {
+                ...modal.data,
+                [event.target.name]: event.target.value
+            }
+        })
+    }
+
+    const editItem = (db, id, value) => {
+        setModal({
+            modalIsOpen: true,
+            dbName: db,
+            dbId: id,
+            data: value
+        });
+    }
+
+    const saveModalValue = event => {
+        event.preventDefault();
+        database.ref(`${modal.dbName}/${modal.dbId}`).update(modal.data);
+        closeModal();
+    }
+
+    function closeModal() {
+        setModal({
+            modalIsOpen: false
+        })
+    }
+
+    const filterItems = event => {
+        if(event) {
+            var filterObj = Object.keys(items).reduce((obj, key) => {
+                obj[key] = Object.values(items[key]).filter(el => el.power && el.power.toLowerCase().search(event.toLowerCase()) !== -1);
+                return obj;
+            }, {});
+    
+            setItems(filterObj)
+        } else {
+            database.ref('/').on('value', snapshot => {
+                setItems(snapshot.val())
+            })
+        }
+    }
+
     return (
         <div className="container">
             <div className="Items-list">
 
-                {props.currentUser ? (
+                {currentUser ? (
                 
                 <div>
-                    <h4>You are logged in as {props.currentUser.email}. Now you can add some products of this list!</h4>
+                    <h4>You are logged in as {currentUser.email}. Now you can add some products of this list!</h4>
 
                     <div className="form-group">
                         <label className="col-form-label">Choose type of product:</label>
@@ -312,13 +356,21 @@ const List = (props) => {
 
                 <div className="toolbar">
                     <form>
-                        <input type="text" placeholder="Filter by type" className="form-control"/>
+                        <input 
+                            type="text" 
+                            placeholder="Search by power type diesel/electric..." 
+                            className="form-control" 
+                            onChange={(e) => filterItems(e.target.value)}/>
                     </form>
                 </div>
 
+                {
+                    modal.modalIsOpen ? <ModalForm valueModal={modal} close={closeModal} save={saveModalValue} change={handleChangeModalValue} /> : null
+                }
+
                 <ul className="Product_list">
-                    {
-                        Object.entries(data.products).map(([child, value]) => (                            
+                    {items ?
+                        Object.entries(items).map(([child, value]) => (                            
                             Object.keys(value).map(key => (
                                 <li key={key} className="d-flex flex-row align-items-center justify-content-between"> 
                                     <div className="Product_list__information">
@@ -330,14 +382,16 @@ const List = (props) => {
                                         {value[key].free_lift ? <p><strong>Free lift (+/-), mm:</strong> {value[key].free_lift}</p> : ''}
                                         {value[key].tyres ? <p><strong>Tyres type:</strong> {value[key].tyres}</p> : ''}
                                         {value[key].fork ? <p><strong>Fork, mm:</strong> {value[key].fork}</p> : ''}
+                                        {value[key].producer ? <p><strong>Producer:</strong> {value[key].producer}</p> : ''}
                                         {value[key].description ? <p><strong>Detail information: </strong> {value[key].description}</p> : ''}
                                     </div>
 
-                                    {props.currentUser ? (
+                                    {currentUser ? (
                                         <div className="d-flex flex-row btn-container">
                                             <button 
                                                 type="button" 
-                                                className="btn btn-primary">
+                                                className="btn btn-primary"
+                                                onClick={() => editItem(child, key, value[key])}>
                                                     Edit
                                             </button>
 
@@ -351,7 +405,7 @@ const List = (props) => {
                                     ) : null}
                                 </li>
                             ))
-                        ))
+                        )) : null
                     }
                 </ul>
             </div>
@@ -359,9 +413,4 @@ const List = (props) => {
     )
 }
 
-const mapStateToProps = state => ({
-    currentUser: state.auth.currentUser,
-    item: state.forklift.item
-});
-
-export default connect(mapStateToProps)(List);
+export default List;

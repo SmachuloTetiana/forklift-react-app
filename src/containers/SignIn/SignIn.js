@@ -1,12 +1,8 @@
 import React, { useState } from 'react';
-import { connect, useDispatch } from 'react-redux';
-import { setCurrentUser } from '../../actions';
 import { Redirect } from 'react-router-dom';
 import { authRef } from '../../firebase';
 
-
-const SignIn = () => {
-    const dispatch = useDispatch();
+const SignIn = props => {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [redirect, setRedirect] = useState();
@@ -16,7 +12,7 @@ const SignIn = () => {
         event.preventDefault();
         try {
             const user = await authRef.signInWithEmailAndPassword(email, password);
-            dispatch(setCurrentUser(user));
+            props.setCurrentUser(user);
             setRedirect({
                 redirect: true
             })     
@@ -82,8 +78,4 @@ const SignIn = () => {
     )
 }
 
-const mapStateToProps = state => ({
-    currentUser: state.auth.currentUser
-});
-
-export default connect(mapStateToProps)(SignIn);
+export default SignIn;

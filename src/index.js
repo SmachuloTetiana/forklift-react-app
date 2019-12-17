@@ -3,12 +3,12 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import './styles.scss';
+import 'styles.scss';
 
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import App from 'App';
+import * as serviceWorker from 'serviceWorker';
 import { createStore } from 'redux';
-import allReducer from './reducers';
+import allReducer from 'store/reducers';
 
 
 const store = createStore(
