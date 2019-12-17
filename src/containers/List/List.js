@@ -99,8 +99,8 @@ const List = ({ currentUser, items, setItems }) => {
     useEffect(() => {
         database.ref('/').on('value', snapshot => {                 
             setItems(snapshot.val())
-        })
-    }, []);
+        });
+    }, [database]);
     
     const deleteItem = (child, id) => {
         database.ref(`${child}/${id}`).remove();
