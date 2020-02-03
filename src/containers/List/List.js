@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ModalForm } from 'components/List/Modal';
 import { database } from '../../firebase';
+import AddForklift from './AddForklift';
 
 const List = ({ currentUser, items, setItems }) => {
     const [product, setProduct] = useState({
@@ -181,7 +182,8 @@ const List = ({ currentUser, items, setItems }) => {
                     </div>
 
                     <div className={`${select.chooseValue === 'forklift' ? 'd-block' : 'd-none'}`}>
-                        <form onSubmit={handleAddForklift}>
+                        <AddForklift />
+                        {/* <form onSubmit={handleAddForklift}>
                             <div className="form-row">
                                 <div className="form-group col-md-6">
                                     <label htmlFor="model">Model:</label>
@@ -294,7 +296,7 @@ const List = ({ currentUser, items, setItems }) => {
                                     Add Forklift
                                 </button>
                             </div>
-                        </form>
+                        </form> */}
                     </div>
 
                     <div className={`${select.chooseValue === 'spare_parts' ? 'd-block' : 'd-none'}`}>
