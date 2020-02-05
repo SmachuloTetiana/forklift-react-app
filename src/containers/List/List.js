@@ -2,21 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { ModalForm } from 'components/List/Modal';
 import { database } from '../../firebase';
 import AddForklift from './AddForklift';
+import AddSparePart from './AddSparePart';
 
 const List = ({ currentUser, items, setItems }) => {
-    const [product, setProduct] = useState({
-        model: '',
-        capacity: '',
-        power: '',
-        transmision: '',
-        lift_height: '',
-        free_lift: '',
-        tyres: '',
-        fork: '',
-        description: '',
-        producer: ''
-    });
-
     const [select, setSelect] = useState({
         options: [
             {
@@ -40,60 +28,6 @@ const List = ({ currentUser, items, setItems }) => {
         setSelect({
             ...select,
             chooseValue: event.target.value
-        })
-    }
-
-    const handleAddForklift = event => {
-        event.preventDefault();
-        database.ref('forklift').push({
-            model: product.model,
-            capacity: product.capacity,
-            power: product.power,
-            transmision: product.transmision,
-            lift_height: product.lift_height,
-            free_lift: product.free_lift,
-            tyres: product.tyres,
-            fork: product.fork,
-            description: product.description
-        });
-        resetFormFields();
-    }
-
-    const handleAddSparePart = event => {
-        event.preventDefault();
-        try {
-            database.ref('spare_part').push({
-                model: product.model,
-                producer: product.producer,
-                description: product.description
-            })
-            resetFormFields();
-        } catch (e) {
-            // TODO: it would be great if in case of error there will be some notification for user
-            console.log(e.message)
-        }
-    }
-
-    const handleChangeInput = event => {
-        event.preventDefault();
-        setProduct({
-            ...product,
-            [event.target.name]: event.target.value
-        })
-    }
-
-    const resetFormFields = () => {
-        setProduct({
-            model: '',
-            capacity: '',
-            power: '',
-            transmision: '',
-            lift_height: '',
-            free_lift: '',
-            tyres: '',
-            fork: '',
-            description: '',
-            producer: ''
         })
     }
 
@@ -183,170 +117,10 @@ const List = ({ currentUser, items, setItems }) => {
 
                     <div className={`${select.chooseValue === 'forklift' ? 'd-block' : 'd-none'}`}>
                         <AddForklift />
-                        {/* <form onSubmit={handleAddForklift}>
-                            <div className="form-row">
-                                <div className="form-group col-md-6">
-                                    <label htmlFor="model">Model:</label>
-                                    <input 
-                                        type="text"
-                                        placeholder="Model"
-                                        className="form-control"
-                                        name="model"
-                                        required
-                                        value={product.model}
-                                        onChange={handleChangeInput} />
-                                </div>
-                                <div className="form-group col-md-6">
-                                    <label htmlFor="capacity">Capacity, kg:</label>
-                                    <input 
-                                        type="text"
-                                        placeholder="Capacity"
-                                        className="form-control"
-                                        name="capacity"
-                                        value={product.capacity}
-                                        onChange={handleChangeInput} />
-                                </div>
-                            </div>
-
-                            <div className="form-row">
-                                <div className="form-group col-md-6">
-                                    <label htmlFor="power">Power Type:</label>
-                                    <input 
-                                        type="text"
-                                        placeholder="Power Type"
-                                        className="form-control"
-                                        name="power"
-                                        value={product.power}
-                                        onChange={handleChangeInput} />
-                                </div>
-                                <div className="form-group col-md-6">
-                                    <label htmlFor="transmision">Type of transmision:</label>
-                                    <input 
-                                        type="text"
-                                        placeholder="Type of transmision"
-                                        className="form-control"
-                                        name="transmision"
-                                        value={product.transmision}
-                                        onChange={handleChangeInput} />
-                                </div>
-                            </div>
-
-                            <div className="form-row">                                
-                                <div className="form-group col-md-6">
-                                    <label htmlFor="lift_height">Lift height, mm:</label>
-                                    <input 
-                                        type="text"
-                                        placeholder="Lift height"
-                                        className="form-control"
-                                        name="lift_height"
-                                        value={product.lift_height}
-                                        onChange={handleChangeInput} />
-                                </div>
-                                <div className="form-group col-md-6">
-                                    <label htmlFor="free_lift">Free lift (+/-), mm:</label>
-                                    <input 
-                                        type="text"
-                                        placeholder="Free lift"
-                                        className="form-control"
-                                        name="free_lift"
-                                        value={product.free_lift}
-                                        onChange={handleChangeInput} />
-                                </div>
-                            </div>
-
-                            <div className="form-row">
-                                <div className="form-group col-md-6">
-                                    <label htmlFor="tyres">Tyres type:</label>
-                                    <input 
-                                        type="text"
-                                        placeholder="Tyres type"
-                                        className="form-control"
-                                        name="tyres"
-                                        value={product.tyres}
-                                        onChange={handleChangeInput} />
-                                </div>
-                                <div className="form-group col-md-6">
-                                    <label htmlFor="fork">Fork, mm:</label>
-                                    <input 
-                                        type="text"
-                                        placeholder="Fork"
-                                        className="form-control"
-                                        name="fork"
-                                        value={product.fork}
-                                        onChange={handleChangeInput} />
-                                </div>
-                            </div>
-
-                            <div className="form-group">
-                                <label htmlFor="description">Detail information:</label>
-                                <textarea 
-                                    type="text"
-                                    placeholder="Detail information"
-                                    className="form-control"
-                                    name="description"
-                                    value={product.description}
-                                    onChange={handleChangeInput}>
-                                </textarea>
-                            </div>
-
-                            <div className="d-flex justify-content-start">
-                                <button
-                                    type="submit"
-                                    className="btn btn-primary">
-                                    Add Forklift
-                                </button>
-                            </div>
-                        </form> */}
                     </div>
 
                     <div className={`${select.chooseValue === 'spare_parts' ? 'd-block' : 'd-none'}`}>
-                        <form onSubmit={handleAddSparePart}>
-                            <div className="form-row">
-                                <div className="form-group col-md-6">
-                                    <label htmlFor="model">Model:</label>
-                                    <input 
-                                        type="text"
-                                        name="model"
-                                        required
-                                        value={product.model}
-                                        onChange={handleChangeInput}
-                                        placeholder="Model"
-                                        className="form-control" />
-                                </div>
-
-                                <div className="form-group col-md-6">
-                                    <label htmlFor="producer">Producer:</label>
-                                    <input 
-                                        type="text"
-                                        name="producer"
-                                        value={product.producer}
-                                        onChange={handleChangeInput}
-                                        placeholder="Producer"
-                                        className="form-control"/>
-                                </div>
-                            </div>
-
-                            <div className="form-group">
-                                <label htmlFor="description">Detail information:</label>
-                                <textarea 
-                                    type="text"
-                                    name="description"
-                                    value={product.description}
-                                    onChange={handleChangeInput}
-                                    placeholder="Detail information"
-                                    className="form-control">
-                                </textarea>
-                            </div>
-
-                            <div className="d-flex justify-content-start">
-                                <button
-                                    type="submit"
-                                    className="btn btn-primary">
-                                    Add Spare Part
-                                </button>
-                            </div>
-
-                        </form>
+                        <AddSparePart />
                     </div>
                 </div>
                 ) : (
